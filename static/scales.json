@@ -1,0 +1,12 @@
+{
+    "modal_scales": {
+        "ionian": {
+            "steps": "0,2,4,5,7,9,11",
+            "other_modal_names": "dorian,phrygian,lydian,mixolydian,aeolian,locrian"
+        },
+        "harmonic_minor": {
+            "steps": "0,2,3,5,7,8,11",
+            "other_modal_names": "locrian_13,ionian_augmented,dorian_#11,phrygian_dominant,lydian_#9,harmonic_dimished"
+        }
+    }
+}
