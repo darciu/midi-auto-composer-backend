@@ -8,5 +8,6 @@
             "steps": "0,2,3,5,7,8,11",
             "other_modal_names": "locrian_13,ionian_augmented,dorian_#11,phrygian_dominant,lydian_#9,harmonic_dimished"
         }
-    }
+    },
+    "other_scales":{}
 }
