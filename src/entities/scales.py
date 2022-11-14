@@ -1,15 +1,15 @@
 import json
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Union
 
 @dataclass
 class Scales:
-    modal_by_name: dict
-    modal_by_order : dict
-    seven_tone: dict
-    six_tone: dict
-    pentatonic: dict
-    all: dict
+    modal_by_name: Dict[str:list]
+    modal_by_order : Dict[int:Dict[str:Union[str,list]]]
+    seven_tone: Dict[str:list]
+    six_tone: Dict[str:list]
+    pentatonic: Dict[str:list]
+    all: Dict[str:list]
 
 
     @staticmethod
