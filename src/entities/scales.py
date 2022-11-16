@@ -45,7 +45,7 @@ class Scales:
             for i in range(len(steps)):
 
                 if modal_names[i] in all.keys():
-                    raise NameError('Two scales with the same name!')
+                    raise NameError(f'Two scales with the same name! {modal_names[i]}')
                 
                 temp_by_name.update({modal_names[i]:shift_scale(steps, n=i)})
                 temp_by_order.update({i+1:{'name':modal_names[i],'scale':shift_scale(steps, n=i)}})
@@ -66,17 +66,20 @@ class Scales:
 
         other_scales = scales['other_scales']
 
-        for name, steps in other_scales:
-            steps = list(map(int, steps.split(',')))
+        for name, steps in other_scales.items():
+            try:
+                steps_ = list(map(int, steps.split(',')))
+            except:
+                raise ValueError(steps)
 
-            if len(steps) == 7:
-                seven_tone.update({name:steps})
-            elif len(steps) == 6:
-                six_tone.update({name:steps})
-            elif len(steps) == 5:
-                pentatonic.update({name:steps})
+            if len(steps_) == 7:
+                seven_tone.update({name:steps_})
+            elif len(steps_) == 6:
+                six_tone.update({name:steps_})
+            elif len(steps_) == 5:
+                pentatonic.update({name:steps_})
                 
-            all.update({name:steps})
+            all.update({name:steps_})
 
 
         return Scales(modal_by_name, modal_by_order, seven_tone, six_tone, pentatonic, all)

@@ -47,10 +47,10 @@ class ScalesChords:
         
         full_dict = {}
 
-        for scale_name, scale_steps in scales.all.items():
+        for scale_name, scale_steps in self.scales.all.items():
             scale_steps_set = set(scale_steps)
             matching_chords = {}
-            for chord_name, chord_steps in chords.chords.items():
+            for chord_name, chord_steps in self.chords.chords.items():
 
                 chord_steps_set = set(chord_steps)
                 if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:
