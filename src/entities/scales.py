@@ -4,12 +4,12 @@ from typing import Dict, Union
 
 @dataclass
 class Scales:
-    modal_by_name: Dict[str:list]
-    modal_by_order : Dict[int:Dict[str:Union[str,list]]]
-    seven_tone: Dict[str:list]
-    six_tone: Dict[str:list]
-    pentatonic: Dict[str:list]
-    all: Dict[str:list]
+    modal_by_name: Dict[str,list]
+    modal_by_order : Dict[int,Dict[str,Union[str,list]]]
+    seven_tone: Dict[str,list]
+    six_tone: Dict[str,list]
+    pentatonic: Dict[str,list]
+    all: Dict[str,list]
 
 
     @staticmethod

@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from entities.scales import Scales
 from entities.chords import Chords
 
@@ -6,37 +6,56 @@ from entities.chords import Chords
 class ScalesChords:
 
     scales: Scales
-    chords: None
-    chords_scales: None
-    scales_chords: None
+    chords: Chords
+    chords_scales: dict = field(init=False)
+    scales_chords: dict = field(init=False)
+    def __post_init__(self):
 
-
-
-    scales = Scales.load_scales('static/scales.json')
-
+        self.chords_scales = self.__chords_scales()
+        self.scales_chords = self.__scales_chords()
+        
     @staticmethod
-    def create_object():
-        scales = Scales.load_scales('static/scales.json')
+    def create_object(path_scales:str = None, path_chords: str = None) -> "ScalesChords":
+        
+        if path_scales == None:
+            path_scales = 'static/scales.json'
+        if path_chords == None:
+            path_chords = 'static/chords.json'
 
-        chords = Chords.load_chords('static/chords.json')
+        scales = Scales.load_scales(path_scales)
+        chords = Chords.load_chords(path_chords)
 
+        return ScalesChords(scales, chords)
+    
+    def __chords_scales(self) -> dict:
+        full_dict = {}
 
+        for chord_name, chord_steps in self.chords.chords.items():
+            chord_steps_set = set(chord_steps)
+            matching_scales = {}
+            for scale_name, scale_steps in self.scales.all.items():
 
+                scale_steps_set = set(scale_steps)
+                if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:
+                    matching_scales.update({scale_name:scale_steps})
 
-# {
-#     "nazwa_akordu": {
-#         "stopnie": [],
-#         "pasujące_skale": {
-#             "skala1": []
-#             ,"skala2":[]
-#         }
-#     }
-# }
+            full_dict.update({chord_name: {"steps":chord_steps,"matching_scales":matching_scales}})
+            
+        return full_dict
+        
+    def __scales_chords(self) -> dict:
+        
+        full_dict = {}
 
-# ### druga wersja
+        for scale_name, scale_steps in scales.all.items():
+            scale_steps_set = set(scale_steps)
+            matching_chords = {}
+            for chord_name, chord_steps in chords.chords.items():
 
-# {"skala":{"stopnie":[]
-#         ,"pasujące_akordy":{
-#             "akord1":[],
-#             "akord2":[]
-#         }}}
+                chord_steps_set = set(chord_steps)
+                if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:
+                    matching_chords.update({chord_name:chord_steps})
+
+            full_dict.update({scale_name: {"steps":scale_steps,"matching_chords":matching_chords}})
+
+        return full_dict
