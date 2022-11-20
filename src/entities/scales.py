@@ -13,12 +13,11 @@ class Scales:
 
 
     @staticmethod
-    def load_scales(path) -> "Scales":
+    def load_scales(path = None) -> "Scales":
 
         def shift_scale(scale, n = 0):
             nth_elem = scale[n]
             return sorted([elem + 12 if elem < 0 else elem for elem in [elem-nth_elem for elem in scale]])
-
 
         modal_by_name = {}
         modal_by_order = {}
@@ -26,7 +25,9 @@ class Scales:
         six_tone = {}
         pentatonic = {}
         all = {}
-
+        if path == None:
+            path = 'static/scales.json'
+        
         with open(path, 'r') as handler:
             scales = json.load(handler)
 
