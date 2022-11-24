@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
-from entities.scales import Scales
-from entities.chords import Chords
+from src.entities.scales import Scales
+from src.entities.chords import Chords
 
 @dataclass
 class ScalesChords:

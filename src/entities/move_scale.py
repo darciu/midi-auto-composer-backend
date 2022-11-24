@@ -13,8 +13,6 @@ class MoveScale:
     move_scale_probas: list = field(init=False)
     move_scale_probas_h1: list = field(init=False)
     move_scale_probas_h2: list = field(init=False)
-    
-
 
     def __post_init__(self):
         
@@ -35,10 +33,10 @@ class MoveScale:
         self.move_scale_probas_h2 = self.normalize_array(np.array_split(self.move_scale_probas,2)[1])
 
 
-    def normalize_array(self, values: Union[list,np.array]) -> np.array:
+    def normalize_array(self, values_list: Union[list,np.array]) -> np.array:
         """normalize array so it sums up to 1"""
-        values = np.array(values)
-        arr = values / values.min()
+        values_array = np.array(values_list)
+        arr = values_array / values_array.min()
         return arr/ arr.sum()
 
 
@@ -47,16 +45,16 @@ class MoveScale:
         move_scale_board.remove(0)
         return move_scale_board
 
-    def __create_move_scale_probas_easy(self):
+    def __create_move_scale_probas_easy(self) -> np.array:
         return self.normalize_array(list(range(1,self.move_scale_max+1)) + list(range(1,self.move_scale_max+1))[::-1])
 
-    def __create_move_scale_probas_normal(self):
+    def __create_move_scale_probas_normal(self) -> np.array:
         return self.normalize_array(np.ones(self.move_scale_max*2))
 
-    def __create_move_scale_probas_hard(self):
+    def __create_move_scale_probas_hard(self) -> np.array:
         return self.normalize_array(list(range(1,self.move_scale_max+1))[::-1] + list(range(1,self.move_scale_max+1)))
 
-    def recalculate_probas(self, move: int, division_factor: int = 6): 
+    def recalculate_probas(self, move: int, division_factor: int = 6) -> np.array: 
         idx = (self.move_scale_board.index(move) + 1) * -1
         changed_scale_probas = self.move_scale_probas.copy()
         changed_scale_probas[idx] = changed_scale_probas[idx]/division_factor
