@@ -60,4 +60,27 @@ class MoveScale:
         changed_scale_probas[idx] = changed_scale_probas[idx]/division_factor
         return self.normalize_array(changed_scale_probas)
     
+    def find_new_note(self, prev_shift_note_index, tonal_scale, current_note_pitch):
+
+        note_index = tonal_scale.index(current_note_pitch)
+
+        if prev_shift_note_index == None:
+            shift_note_index = np.random.choice(
+                self.move_scale_board, p=self.move_scale_probas)
+        else:
+            shift_note_index = np.random.choice(
+                self.move_scale_board, p = self.recalculate_probas(prev_shift_note_index))
+
+
+        if (note_index + shift_note_index) < 0:
+            shift_note_index = np.random.choice(
+                self.move_scale_board_h2, p = self.move_scale_probas_h2)
+
+        elif (note_index + shift_note_index) > len(tonal_scale)-1:
+            shift_note_index = np.random.choice(
+                self.move_scale_board_h1, p = self.move_scale_probas_h1)
+
+        new_note_pitch = tonal_scale[note_index + shift_note_index]
+
+        return new_note_pitch, shift_note_index
     
