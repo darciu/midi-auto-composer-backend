@@ -1,5 +1,7 @@
 # own
 .env
+todo.list
+*.mid
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

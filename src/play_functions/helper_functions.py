@@ -29,7 +29,7 @@ def get_tone_key(tone_key: str) -> str:
     
 
 def create_tonal_scale_and_primes_lists(tone_key: str, scale: list, min_notes_range: int, max_notes_range: int) -> Tuple[list, list]:
-    """return list of tonal scale with all notes and also primes"""
+    """return list of tonal scale with all notes and also primes pitches"""
     primes = list(range(tone_start[tone_key],max_notes_range+1,12))
     all_tones = [prime + tone for tone in scale for prime in primes]
     all_tones = [x for x in all_tones if x <= max_notes_range and x >= min_notes_range]
