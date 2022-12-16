@@ -9,9 +9,9 @@
             "m7",
             "m7b5"
         ],
-        "steps": [
+        "steps": 
             "0,2,4,5,7,9,11"
-        ]
+        
     },
     "minor": {
         "progression": [
@@ -23,9 +23,9 @@
             "maj7",
             "dominant7"
         ],
-        "steps": [
+        "steps": 
             "0,2,3,5,7,8,10"
-        ]
+        
     },
     "harmonic_minor": {
         "progression": [
@@ -37,9 +37,9 @@
             "maj7",
             "dimished"
         ],
-        "steps": [
+        "steps": 
             "0,2,3,5,7,11"
-        ]
+        
     },
     "melodic_minor": {
         "progression": [
@@ -51,23 +51,23 @@
             "m7b5",
             "m7b5"
         ],
-        "steps": [
+        "steps": 
             "0,2,3,5,7,9,11"
-        ]
+        
     },
     "double_harmonic_minor": {
         "progression": [
             "minor",
             ""
         ],
-        "steps": []
+        "steps": ""
     },
     "double_harmonic_major": {
         "progression": [],
-        "steps": []
+        "steps": ""
     },
     "harmonic_major": {
         "progression": [],
-        "steps": []
+        "steps": ""
     }
 }

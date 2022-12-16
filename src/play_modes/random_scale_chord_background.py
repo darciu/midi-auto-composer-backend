@@ -52,8 +52,8 @@ setattr(scamp.Performance, 'get_midi_object', get_midi_object)
 def interface(play_preview_scale: bool):
 
     # quarternotes, scale, chord, key
-    measures = [(4, scales.all['minor_thirds'], chords.chords['minor'],'b'),
-                (4, scales.all['pentatonic_major'], chords.chords['major'], 'g')]
+    measures = [(4, scales.all['ionian'], chords.chords['minor'],'e'),
+                (4, scales.all['aeolian'], chords.chords['major'], 'g')]
 
     # measures = [(4, scales.all['pentatonic_minor'], chords.chords['dominant7'],
     #              'g'), (4, scales.all['pentatonic_major'], chords.chords['major'], 'g')]
@@ -62,8 +62,8 @@ def interface(play_preview_scale: bool):
     min_notes_range = 40
     max_notes_range = 81
 
-    playback_tempo = 100
-    midi_tempo = 100
+    playback_tempo = 5000
+    midi_tempo = 120
 
     sess = Session(tempo=playback_tempo)
 
@@ -154,7 +154,7 @@ def single_scale_chord(sess: scamp.Session, instrument: scamp.instruments.ScampI
     return note_pitch
 
 
-
+interface(play_preview_scale=False)
 
 #---
 
