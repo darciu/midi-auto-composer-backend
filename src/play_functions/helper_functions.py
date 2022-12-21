@@ -1,5 +1,8 @@
 import random
-from typing import Tuple
+from typing import Tuple, Optional
+
+
+from ..entities.move_scale import MoveScale
 
 tone_start: dict = {
         'c':48,
@@ -34,3 +37,21 @@ def create_tonal_scale_and_primes_lists(tone_key: str, scale: list, min_notes_ra
     all_tones = [prime + tone for tone in scale for prime in primes]
     all_tones = [x for x in all_tones if x <= max_notes_range and x >= min_notes_range]
     return sorted(all_tones), sorted(primes)
+
+
+
+
+
+def find_random_notes(quarternotes: int, tonal_scale: list, note_pitch: int, shift_note_index: Optional[int],
+                        move_scale_obj: MoveScale) -> Tuple[list, int]:
+
+    list_of_notes = []
+
+    for _ in range(quarternotes):
+
+        note_pitch, shift_note_index = move_scale_obj.find_new_note(
+            shift_note_index, tonal_scale, note_pitch)
+
+        list_of_notes.append(note_pitch)
+
+    return list_of_notes, shift_note_index

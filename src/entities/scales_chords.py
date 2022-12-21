@@ -23,7 +23,7 @@ class ScalesChords:
             path_chords = 'static/chords.json'
 
         scales = Scales.load_scales(path_scales)
-        chords = Chords.load_chords(path_chords)
+        chords = Chords.load_chords()
 
         return ScalesChords(scales, chords)
     

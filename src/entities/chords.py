@@ -1,18 +1,28 @@
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Dict, List
 import json
 
 @dataclass
 class Chords:
-    chords: Dict[str,List[int]]
+    """A class holding chords in dictionary if form
+    chord type (str) : list of integer steps
+
+    where steps are following building chord pitches
+    eg. "major": [0,4,7]
+
+    Attributes
+    ----------
+    chords: dict
+        chords stored as dictionary
+    """
+    chords: Dict[str, List[int]]
 
     @staticmethod
-    def load_chords(path: Optional[str] = None) -> "Chords":
-        if path == None:
-            path = 'static/chords.json'
-        with open(path, 'r') as handler:
+    def load_chords() -> "Chords":
+
+        with open('static/chords.json', 'r') as handler:
             chords = json.load(handler)
 
-        chords = {name:[int(step) for step in struct.split(',')] for name, struct in chords.items()}
+        chords = {name: [int(step) for step in struct.split(',')] for name, struct in chords.items()}
 
         return Chords(chords)

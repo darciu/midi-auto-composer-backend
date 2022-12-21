@@ -1,11 +1,4 @@
 """
-plik ten daje dostęp do wybranej harmonii, w formie listy
-harmonia powstaje po podaniu tonacji (jej kolejne stopnie okeślane są jako tuplety tonacja, rodzaj akordu)
-harmonia moze być modyfikowana po jej wywołaniu:
- - mozna podnosić/obnizać jej stopnie o podany interwał (max to odległość do sąsiadujacego stopnia)
- - mozna zmieniać typ akordu na danym stopniu
-
- więc zwracany jest obiekt per dana harmonia, którą trzeba podać jako parametr w wywoływaniu instancji
 
 mozna decydować, czy zwracane są trzydźwięki lub czterodźwięki
 
@@ -18,10 +11,27 @@ from typing import List, Tuple
 
 @dataclass
 class Harmony:
+    """A class holding harmony created on given harmony name and tonal key
+    with methods to modify each attribute
+
+    Attributes
+    ----------
+    harmony_name: str
+        harmony name derived from main scales
+    tonal_key: str
+        tonation of harmony
+    steps: List[int]
+        following harmony steps based on chromatic scale
+    chords_progression: List[str]
+        following harmony chords names
+    harmony_chords: List[Tuple[str, str]]
+        pairs of chord name, chord tonation kept as list of tuples
+    """
+
     harmony_name: str
     tonal_key : str
     steps: List[int]
-    chords_progression: list
+    chords_progression: List[str]
     harmony_chords: List[Tuple[str, str]] = field(init=False)
         
         
@@ -43,9 +53,11 @@ class Harmony:
         
         
         
-    def __get_harmony_chords_progression(self, tonal_key, chords_progression, steps):
+    def __get_harmony_chords_progression(self, tonal_key: str, chords_progression: list, steps: list) -> List[Tuple[str, str]]:
+        """create harmony chords progression based on given variables"""
         
-        def add_interval(tonal_key, interval):
+        def add_interval(tonal_key: str, interval: int) -> str:
+            # internal function for moving tonal key by interval
             tones = [
             'c',
             'c#',
@@ -77,25 +89,29 @@ class Harmony:
             
     
     
-    def modify_tonal_key(self, tonal_key: str):
+    def modify_tonal_key(self, tonal_key: str) -> None:
+        """change tonal key of the harmony"""
         self.tonal_key = tonal_key
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
-    def replace_chord(self, pos: int, new_chord: str):
-        # dodać walicację czy taki chord jest w akordach
+    def replace_chord(self, pos: int, new_chord: str) -> None:
+        """replace chord on given position by the new chord"""
         self.chords_progression[pos] = new_chord
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
-    def modify_chord_pitch(self, pos: int, move_step: int):
+    def modify_chord_pitch(self, pos: int, move_step: int) -> None:
+        """modify chord on given position by increasing/decreasing it's pitch"""
         self.steps[pos] = self.steps[pos]  + move_step
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
-    def delete_chord(self, pos: int):
+    def delete_chord(self, pos: int) -> None:
+        """delete chord on given position"""
         del self.steps[pos]
         del self.chords_progression[pos]
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
-    def add_new_chord(self, step: int, new_chord: str):
+    def add_new_chord(self, step: int, new_chord: str) -> None:
+        """add chord at given harmony step"""
         if step in self.steps:
             raise ValueError('There is an existing chord at this step')
         if not 0 < step < 11:
