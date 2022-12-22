@@ -2,7 +2,7 @@ import random
 from typing import Tuple, Optional
 
 
-from ..entities.move_scale import MoveScale
+from entities.move_scale import MoveScale
 
 tone_start: dict = {
         'c':48,
@@ -31,27 +31,43 @@ def get_tone_key(tone_key: str) -> str:
         return tone_key
     
 
-def create_tonal_scale_and_primes_lists(tone_key: str, scale: list, min_notes_range: int, max_notes_range: int) -> Tuple[list, list]:
+def create_tonal_scale_and_primes_lists(scale: list, scale_tonation: str, notes_range: tuple) -> Tuple[list, list]:
     """return list of tonal scale with all notes and also primes pitches"""
-    primes = list(range(tone_start[tone_key],max_notes_range+1,12))
+    min_notes_range = notes_range[0]
+    max_notes_range = notes_range[1]
+    primes = list(range(tone_start[scale_tonation],max_notes_range+1,12))
     all_tones = [prime + tone for tone in scale for prime in primes]
     all_tones = [x for x in all_tones if x <= max_notes_range and x >= min_notes_range]
+    
     return sorted(all_tones), sorted(primes)
 
 
+def find_random_notes(quarternotes: int, scale: list, scale_tonation: str,  notes_range: tuple, note_pitch: int, shift_note_index: Optional[int],
+                        move_scale_max: int, difficulty: str) -> Tuple[list, int]:
 
+    
+    # this object is initialized per every measue so it the whole method needs one less parameter
+    move_scale_obj = MoveScale(move_scale_max, difficulty=difficulty)
 
+    tonal_scale, primes = create_tonal_scale_and_primes_lists(
+        scale, scale_tonation, notes_range)
 
-def find_random_notes(quarternotes: int, tonal_scale: list, note_pitch: int, shift_note_index: Optional[int],
-                        move_scale_obj: MoveScale) -> Tuple[list, int]:
+    if note_pitch == None:
+        # random first note from primes
+        note_pitch = random.choice(primes)
+    elif note_pitch not in tonal_scale:
+        # most similar pitch to previous note pitch
+        note_pitch = min(tonal_scale, key=lambda x: abs(x-note_pitch))
 
     list_of_notes = []
 
     for _ in range(quarternotes):
 
+        # find new note pitch and what kind of shift was it
         note_pitch, shift_note_index = move_scale_obj.find_new_note(
             shift_note_index, tonal_scale, note_pitch)
 
         list_of_notes.append(note_pitch)
 
+    # return shift_note_index in order to know what was the last shift of the note
     return list_of_notes, shift_note_index

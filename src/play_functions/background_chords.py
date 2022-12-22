@@ -1,9 +1,11 @@
 from scamp.instruments import ScampInstrument
 import random
 
+from play_functions.helper_functions import create_tonal_scale_and_primes_lists, get_tone_key
+
 # przenieść tutaj wytwarzanie tonal_chord
 
-def play_background_chord(instrument: ScampInstrument, quarternotes: int, tonal_chord: list, volume: float = 0.4) -> None:
+def play_background_chord(instrument: ScampInstrument, quarternotes: int, chord: str, chord_tonation: str, notes_range: tuple, volume: float = 0.4) -> None:
     """
     Play background chord
 
@@ -15,6 +17,10 @@ def play_background_chord(instrument: ScampInstrument, quarternotes: int, tonal_
 
     """
 
+    chord_tonation = get_tone_key(chord_tonation)
+
+    tonal_chord, _ = create_tonal_scale_and_primes_lists(
+        chord, chord_tonation, notes_range)
 
     chord = [tone for tone in tonal_chord if tone <= tonal_chord[0]+24 and tone > tonal_chord[0]]
 

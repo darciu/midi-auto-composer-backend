@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
-from src.entities.scales import Scales
-from src.entities.chords import Chords
+from entities.scales import Scales
+from entities.chords import Chords
 
 @dataclass
 class ScalesChords:
@@ -30,7 +30,7 @@ class ScalesChords:
     def __chords_scales(self) -> dict:
         full_dict = {}
 
-        for chord_name, chord_steps in self.chords.chords.items():
+        for chord_name, chord_steps in self.chords.all.items():
             chord_steps_set = set(chord_steps)
             matching_scales = {}
             for scale_name, scale_steps in self.scales.all.items():
@@ -50,7 +50,7 @@ class ScalesChords:
         for scale_name, scale_steps in self.scales.all.items():
             scale_steps_set = set(scale_steps)
             matching_chords = {}
-            for chord_name, chord_steps in self.chords.chords.items():
+            for chord_name, chord_steps in self.chords.all.items():
 
                 chord_steps_set = set(chord_steps)
                 if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:

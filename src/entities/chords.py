@@ -12,10 +12,10 @@ class Chords:
 
     Attributes
     ----------
-    chords: dict
-        chords stored as dictionary
+    all: dict
+        all chords stored as dictionary
     """
-    chords: Dict[str, List[int]]
+    all: Dict[str, List[int]]
 
     @staticmethod
     def load_chords() -> "Chords":
@@ -23,6 +23,6 @@ class Chords:
         with open('static/chords.json', 'r') as handler:
             chords = json.load(handler)
 
-        chords = {name: [int(step) for step in struct.split(',')] for name, struct in chords.items()}
+        all = {name: [int(step) for step in struct.split(',')] for name, struct in chords.items()}
 
-        return Chords(chords)
+        return Chords(all)

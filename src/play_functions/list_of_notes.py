@@ -5,6 +5,7 @@ def play_list_of_notes(instrument: ScampInstrument, list_of_notes: list) -> None
 
     for note_pitch in list_of_notes:
 
+        # volume adjustment (lower tones are quieter)
         if note_pitch < 50:
             instrument.play_note(note_pitch, 1, 2)
         elif note_pitch < 65:
