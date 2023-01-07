@@ -1,5 +1,6 @@
 import random
 from typing import Tuple, Optional
+import time
 
 
 from entities.move_scale import MoveScale
@@ -20,15 +21,15 @@ tone_start: dict = {
     }
 
 
-def get_tone_key(tone_key: str) -> str:
+def get_tonation(tonation: str) -> str:
     """if tone_key value is random, randomly pick from all keys list"""
 
-    if tone_key not in ['c','c#','d','d#','e','f','f#','g','g#','a','a#','b','random']:
+    if tonation not in ['c','c#','d','d#','e','f','f#','g','g#','a','a#','b','random']:
         raise ValueError('Not invalid tone key!')
-    elif tone_key == 'random':
+    elif tonation == 'random':
         return random.choice(list(tone_start.keys()))
     else:
-        return tone_key
+        return tonation
     
 
 def create_tonal_scale_and_primes_lists(scale: list, scale_tonation: str, notes_range: tuple) -> Tuple[list, list]:
@@ -71,3 +72,10 @@ def find_random_notes(quarternotes: int, scale: list, scale_tonation: str,  note
 
     # return shift_note_index in order to know what was the last shift of the note
     return list_of_notes, shift_note_index
+
+
+def get_current_time() -> float:
+
+    time_start = time.time()
+
+    return time_start

@@ -1,6 +1,6 @@
 from scamp.instruments import ScampInstrument
 from scamp import wait
-from .helper_functions import get_tone_key, create_tonal_scale_and_primes_lists
+from .helper_functions import get_tonation, create_tonal_scale_and_primes_lists
 
 
 def play_scale_preview(instrument_solo: ScampInstrument, scale: list, scale_tonation: str, notes_range: tuple) -> None:
@@ -9,7 +9,7 @@ def play_scale_preview(instrument_solo: ScampInstrument, scale: list, scale_tona
 
     """
 
-    scale_tonation = get_tone_key(scale_tonation)
+    scale_tonation = get_tonation(scale_tonation)
 
     tonal_scale, _ = create_tonal_scale_and_primes_lists(
         scale, scale_tonation, notes_range)
