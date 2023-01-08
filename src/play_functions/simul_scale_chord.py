@@ -16,7 +16,7 @@ def play_multiple_scales_chords(sess: Session, instruments: Tuple[ScampInstrumen
     
     prev_note_pitch = None
 
-    if timeout == None:
+    if timeout == None or timeout == 0:
         for _ in range(repeat_n_times):
 
             for measure in measures:
@@ -28,8 +28,7 @@ def play_multiple_scales_chords(sess: Session, instruments: Tuple[ScampInstrumen
             current_time = get_current_time()
             if not (current_time - start_time >= timeout):
                 prev_note_pitch = play_single_scale_chord_measure(sess, instruments, measure,  prev_note_pitch, move_scale_max, notes_range)
-                print('anas')
-            print('a to nie')
+
 
 
 

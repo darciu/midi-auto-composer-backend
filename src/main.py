@@ -6,11 +6,24 @@ import scamp
 
 app = FastAPI()
 
+from api.v1 import chords_sequence
 from api.v1 import multiple_scales_multiple_chords
+from api.v1 import one_scale_one_chord
+from api.v1 import pattern
+from api.v1 import random_background_chords
+from api.v1 import random_scales_one_chord
+
+
+
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(multiple_scales_multiple_chords.router, prefix="/v1")
+app.include_router(one_scale_one_chord.router, prefix="/v1")
+app.include_router(pattern.router, prefix="/v1")
+app.include_router(random_background_chords.router, prefix="/v1")
+app.include_router(random_scales_one_chord.router, prefix="/v1")
+
 
 
 @app.on_event("startup")
@@ -27,6 +40,4 @@ def update_function():
 
         return midi_obj
 
-
-    
     setattr(scamp.Performance, 'get_midi_object', get_midi_object)

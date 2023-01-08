@@ -2,9 +2,6 @@
 *.mid
 *.list
 requirements_dev.txt
-__pycache__
-.env
-
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

@@ -46,24 +46,24 @@ midi_obj = play_multiple_scales_multiple_chords(playback_tempo, measures, 2, 2, 
 print(midi_obj)
 
 # # 2 mode
-# play_one_scale_one_chord(playback_tempo, scales.all['ionian'], 'e', chords.all['major'], None, 4, 3, True, True, 15, None, notes_range)
+play_one_scale_one_chord(playback_tempo, scales.all['ionian'], 'e', chords.all['major'], None, 4, 3, True, True, 15, None, notes_range)
 
 
 # 3 mode
-# play_pattern(playback_tempo, scales.all['wholetone'], 'random', [1,2,3], notes_range, True)
+play_pattern(playback_tempo, scales.all['wholetone'], 'random', [1,2,3], notes_range, True)
 
 
 
 # # 4 mode
-# chords = [(chords.all['major'],'a')
-#         ,(chords.all['minor'],'c#')
-#         ,(chords.all['dominant7'],'e')]
-# play_random_background_chords(playback_tempo, chords, 4, 10, 10, notes_range)
+chords = [(chords.all['major'],'a')
+        ,(chords.all['minor'],'c#')
+        ,(chords.all['dominant7'],'e')]
+play_random_background_chords(playback_tempo, chords, 4, 10, 10, notes_range)
 
 
 # # 5 mode
 
-# scales = [scales.all['pentatonic_minor'], scales.all['pentatonic_major'], scales.all['mixolydian']]
+scales = [scales.all['pentatonic_minor'], scales.all['pentatonic_major'], scales.all['mixolydian']]
 
-# play_random_scales_one_chord(playback_tempo, scales, 'd', chords.all['dominant7'], None, 15, 4, 2, 10, notes_range)
+play_random_scales_one_chord(playback_tempo, scales, 'd', chords.all['dominant7'], None, 15, 4, 2, 10, notes_range)
 
