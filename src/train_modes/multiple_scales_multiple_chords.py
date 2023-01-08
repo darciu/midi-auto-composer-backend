@@ -14,4 +14,11 @@ def play_multiple_scales_multiple_chords(playback_tempo: int, measures: list, mo
 
     instruments = instrument_solo, instrument_back
 
+
+    sess.start_transcribing()
+
     play_multiple_scales_chords(sess, instruments, measures, move_scale_max, repeat_n_times, timeout, notes_range)
+
+    midi_obj = sess.stop_transcribing().get_midi_object(playback_tempo, 200)
+
+    return midi_obj
