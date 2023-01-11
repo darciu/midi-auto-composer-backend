@@ -1,10 +1,9 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from midiutil import MIDIFile
 
 import scamp
-
-app = FastAPI()
 
 from api.v1 import chords_sequence
 from api.v1 import multiple_scales_multiple_chords
@@ -13,7 +12,19 @@ from api.v1 import pattern
 from api.v1 import random_background_chords
 from api.v1 import random_scales_one_chord
 
+app = FastAPI()
 
+origins = [
+    "http://localhost:3333"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
