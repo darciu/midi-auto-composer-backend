@@ -12,6 +12,8 @@ from api.v1 import pattern
 from api.v1 import random_background_chords
 from api.v1 import random_scales_one_chord
 
+from api.v1.scales import get_scales
+
 app = FastAPI()
 
 origins = [
@@ -34,6 +36,8 @@ app.include_router(one_scale_one_chord.router, prefix="/v1")
 app.include_router(pattern.router, prefix="/v1")
 app.include_router(random_background_chords.router, prefix="/v1")
 app.include_router(random_scales_one_chord.router, prefix="/v1")
+
+app.include_router(get_scales.router, prefix="/v1/scales")
 
 
 
