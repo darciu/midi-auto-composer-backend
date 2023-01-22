@@ -68,7 +68,7 @@ def send_file(fields: RequestFields, background_tasks: BackgroundTasks):
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path)
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mid')
 
 
 
