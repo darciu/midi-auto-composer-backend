@@ -1,12 +1,15 @@
 from typing import Optional
 from scamp import Session
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
+from starlette.background import BackgroundTasks
 from pydantic import BaseModel
-import pickle
+import random
 
 from play_functions.scale_preview import play_scale_preview
 from play_functions.simul_scale_chord import play_multiple_scales_chords
 from play_functions.helper_functions import get_tonation
+from . import remove_file
 
 from entities.scales import Scales
 from entities.chords import Chords
@@ -38,7 +41,7 @@ class RequestFields(BaseModel):
 
 def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, chord: list, chord_tonation: Optional[str],
                             quarternotes: int, move_scale_max: int, scale_preview: bool, play_background_chord: bool, repeat_n_times: int,
-                            timeout: Optional[int], notes_range: tuple):
+                            timeout: Optional[int], notes_range: tuple) -> str:
 
     playback_tempo = tempos[0]
     midi_tempo = tempos[1]
@@ -54,11 +57,14 @@ def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, ch
         instrument_back = None
 
     instruments = instrument_solo, instrument_back
+    
 
     scale_tonation = get_tonation(scale_tonation)
 
     if chord_tonation == None:
         chord_tonation = scale_tonation
+
+    output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
     sess.start_transcribing()
     
@@ -70,13 +76,13 @@ def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, ch
 
     play_multiple_scales_chords(sess, instruments, measures, move_scale_max, repeat_n_times, timeout, notes_range)
 
-    midi_obj = sess.stop_transcribing().get_midi_object(playback_tempo, midi_tempo)
+    sess.stop_transcribing().save_midi_file(output_file_path, playback_tempo, midi_tempo)
 
-    return midi_obj
+    return output_file_path
 
 
 @router.post("/one_scale_one_chord")
-def func(fields: RequestFields):
+def func(fields: RequestFields, background_tasks: BackgroundTasks):
 
     tempos = (fields.playback_tempo, fields.midi_tempo)
 
@@ -84,10 +90,10 @@ def func(fields: RequestFields):
     chord = chords.all[fields.chord]
     
 
-    midi_obj = play_one_scale_one_chord(tempos, scale, fields.scale_tonation, chord, fields.chord_tonation,
+    output_file_path = play_one_scale_one_chord(tempos, scale, fields.scale_tonation, chord, fields.chord_tonation,
                             fields.quarternotes, fields.move_scale_max, fields.scale_preview, fields.play_background_chord, fields.repeat_n_times,
                             fields.timeout, fields.notes_range)
 
-    str_midi_obj = str(pickle.dumps(midi_obj, 0))
+    background_tasks.add_task(remove_file, output_file_path)
 
-    return str_midi_obj
+    return FileResponse(output_file_path)

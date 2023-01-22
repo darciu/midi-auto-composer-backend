@@ -1,9 +1,13 @@
 from scamp import Session
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
+from starlette.background import BackgroundTasks
 from pydantic import BaseModel
-import pickle
+import random
+
 
 from play_functions.scale_with_pattern import play_scale_with_pattern_upwards, play_scale_with_pattern_downwards
+from . import remove_file
 
 from entities.scales import Scales
 from entities.chords import Chords
@@ -16,6 +20,8 @@ scales_chords = ScalesChords.create_object()
 router = APIRouter()
 
 
+
+
 class RequestFields(BaseModel):
     playback_tempo: int = 3500
     midi_tempo: int = 120
@@ -25,7 +31,7 @@ class RequestFields(BaseModel):
     play_upwards: bool = True
     notes_range: tuple = (40, 81)
 
-def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list, play_upwards: bool, notes_range: tuple):
+def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list, play_upwards: bool, notes_range: tuple) -> str:
 
     playback_tempo = tempos[0]
     midi_tempo = tempos[1]
@@ -33,6 +39,8 @@ def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list,
     sess = Session(tempo=playback_tempo)
 
     instrument_solo = sess.new_part('cello')
+
+    output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
     sess.start_transcribing()
 
@@ -44,19 +52,23 @@ def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list,
 
         play_scale_with_pattern_downwards(instrument_solo, scale, scale_tonation, pattern, notes_range)
 
-    midi_obj = sess.stop_transcribing().get_midi_object(playback_tempo, midi_tempo)
+    sess.stop_transcribing().save_midi_file(output_file_path, playback_tempo, midi_tempo)
 
-    return midi_obj
+    return output_file_path
+    
 
 @router.post("/pattern")
-def func(fields: RequestFields):
+def send_file(fields: RequestFields, background_tasks: BackgroundTasks):
 
     tempos = (fields.playback_tempo, fields.midi_tempo)
 
     scale = scales.all[fields.scale]
     
-    midi_obj = play_pattern(tempos, scale, fields.scale_tonation, fields.pattern, fields.play_upwards, fields.notes_range)
+    output_file_path = play_pattern(tempos, scale, fields.scale_tonation, fields.pattern, fields.play_upwards, fields.notes_range)
 
-    str_midi_obj = str(pickle.dumps(midi_obj, 0))
+    background_tasks.add_task(remove_file, output_file_path)
 
-    return str_midi_obj
+    return FileResponse(output_file_path)
+
+
+
