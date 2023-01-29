@@ -9,7 +9,7 @@ import random
 
 from play_functions.background_chords import play_background_chord
 from play_functions.helper_functions import get_current_time
-from . import remove_file
+from . import remove_file, convert_midi_file
 
 from entities.scales import Scales
 from entities.chords import Chords
@@ -85,6 +85,8 @@ def func(fields: RequestFields, background_tasks: BackgroundTasks):
     output_file_path = play_random_background_chords(
         tempos, chords_list, fields.quarternotes, fields.repeat_n_times, fields.timeout, fields.notes_range)
 
+    output_file_path = convert_midi_file(output_file_path)
+
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mid')
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.wav')

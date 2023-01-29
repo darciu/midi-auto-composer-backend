@@ -6,8 +6,9 @@ from pydantic import BaseModel
 import random
 
 
+
 from play_functions.scale_with_pattern import play_scale_with_pattern_upwards, play_scale_with_pattern_downwards
-from . import remove_file
+from . import remove_file, convert_midi_file
 
 from entities.scales import Scales
 from entities.chords import Chords
@@ -65,10 +66,12 @@ def send_file(fields: RequestFields, background_tasks: BackgroundTasks):
     scale = scales.all[fields.scale]
     
     output_file_path = play_pattern(tempos, scale, fields.scale_tonation, fields.pattern, fields.play_upwards, fields.notes_range)
+    
+    output_file_path = convert_midi_file(output_file_path)
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mid')
+    return FileResponse(output_file_path[:-3] + 'wav', media_type='application/octet-stream', filename='record.wav')
 
 
 

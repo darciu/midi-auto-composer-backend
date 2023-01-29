@@ -2,6 +2,8 @@
 *.mid
 *.list
 requirements_dev.txt
+*.wav
+*.mp3
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
