@@ -15,9 +15,9 @@ from entities.scales import Scales
 from entities.chords import Chords
 from entities.scales_chords import ScalesChords
 
-scales = Scales.load_scales()
-chords = Chords.load_chords()
-scales_chords = ScalesChords.create_object()
+scales = Scales.load()
+chords = Chords.load()
+scales_chords = ScalesChords.load()
 
 
 router = APIRouter()

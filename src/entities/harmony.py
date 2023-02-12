@@ -16,17 +16,11 @@ class Harmony:
     with methods to modify each attribute
 
     Attributes:
-    ----------
-    harmony_name: str
-        harmony name derived from main scales
-    tonal_key: str
-        tonation of harmony
-    steps: List[int]
-        following harmony steps based on chromatic scale
-    chords_progression: List[str]
-        following harmony chords names
-    harmony_chords: List[Tuple[str, str]]
-        pairs of chord name, chord tonation kept as list of tuples
+    harmony_name - harmony name derived from main scales
+    tonal_key - tonation of harmony
+    steps - following harmony steps based on chromatic scale
+    chords_progression - following harmony chords names
+    harmony_chords - pairs of chord name, chord tonation kept as list of tuples
     """
 
     harmony_name: str

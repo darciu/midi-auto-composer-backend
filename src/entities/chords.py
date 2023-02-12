@@ -19,7 +19,8 @@ class Chords:
     all: Dict[str, List[int]]
 
     @staticmethod
-    def load_chords() -> "Chords":
+    def load() -> "Chords":
+        """Create Chords class object from static dictionary"""
 
         all = {name: [int(step) for step in struct.split(',')] for name, struct in all_chords.items()}
 

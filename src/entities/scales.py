@@ -14,7 +14,8 @@ class Scales:
 
 
     @staticmethod
-    def load_scales() -> "Scales":
+    def load() -> "Scales":
+        """Create Scales class object from static dictionary"""
 
         def shift_scale(scale, n = 0):
             nth_elem = scale[n]

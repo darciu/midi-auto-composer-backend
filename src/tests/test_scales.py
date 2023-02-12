@@ -7,7 +7,7 @@ sys.path.insert(0, myPath + "/../")
 
 from entities.scales import Scales
 
-scales = Scales.load_scales()
+scales = Scales.load()
 
 
 scales_list = "ionian,dorian,phrygian,lydian,mixolydian,aeolian,locrian".split(',')

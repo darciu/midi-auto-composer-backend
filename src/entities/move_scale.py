@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Literal, Union
+from typing import Literal, Union, Tuple
 import numpy as np
 
 
@@ -75,7 +75,16 @@ class MoveScale:
         changed_scale_probas[idx] = changed_scale_probas[idx]/division_factor
         return self.normalize_array(changed_scale_probas)
     
-    def find_new_note(self, prev_shift_note_index, tonal_scale, current_note_pitch):
+    def find_new_note(self, prev_shift_note_index: int, tonal_scale: list, current_note_pitch: int) -> Tuple[int, int]:
+        """Find new note pitch according to previous note pitch and tonal scale with certain probabilities
+        
+        :param prev_shift_note_index: what was the last move on the tonal scale; this helps to prevent loops while playing
+        :type prev_shift_note_index: int
+        :param tonal_scale: list containing all notes pitches of playing tonal scale
+        :type tonal_scale: list
+        :param current_note_pitch: actually played note
+        :type current_note_pitch: int
+        """
 
         note_index = tonal_scale.index(current_note_pitch)
 

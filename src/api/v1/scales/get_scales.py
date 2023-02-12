@@ -3,7 +3,7 @@ from typing import List
 
 from entities.scales import Scales
 
-scales = Scales.load_scales()
+scales = Scales.load()
 
 router = APIRouter()
 
