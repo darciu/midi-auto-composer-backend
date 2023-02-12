@@ -5,6 +5,16 @@ import numpy as np
 
 @dataclass
 class MoveScale:
+    """A class containing probability board (list) used while choosing new random note.
+    There are three types of difficulty:
+     - easy: it is more probable to choose new note nearer than farther from actually playing note;
+     - normal: probability of choosing near and far notes is uniform;
+     - hard: farther notes are more likely to choose
+
+     Attributes:
+     move_scale_max: int
+        how distant scale steps are allowed while choosing new note (upwards and downwards)
+    """
     move_scale_max: int
     difficulty: Literal['easy','normal','hard'] = 'normal'
     move_scale_board: list = field(init=False)
@@ -34,7 +44,12 @@ class MoveScale:
 
 
     def normalize_array(self, values_list: Union[list,np.array]) -> np.array:
-        """normalize array so it sums up to 1"""
+        """Normalize array so it sums up to 1
+        
+        :param values_list: sequence of values to be normalized
+        :type values_list: Union[list, np.array]
+        :return: Numpy's array that sums up to 1
+        """
         values_array = np.array(values_list)
         arr = values_array / values_array.min()
         return arr/ arr.sum()

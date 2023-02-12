@@ -1,6 +1,5 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from midiutil import MIDIFile
 from typing import Optional
 
@@ -31,7 +30,6 @@ app.add_middleware(
 )
 
 
-app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(multiple_scales_multiple_chords.router, prefix="/v1")
 app.include_router(one_scale_one_chord.router, prefix="/v1")
@@ -45,6 +43,7 @@ app.include_router(get_scales.router, prefix="/v1/scales")
 
 @app.on_event("startup")
 def update_function():
+    "This is update of scamp.Performance method in order to edit a midi file"
     def save_midi_file(self, output_file_name: str, playback_tempo: int, midi_tempo: int, max_channels: int = 16,
                         ring_time: float = 0.5,  pitch_bend_range: float = 2, envelope_precision: float = 0.01) -> MIDIFile:
         midi_obj = MIDIFile(len(self.parts))        

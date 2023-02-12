@@ -15,14 +15,9 @@ class ScalesChords:
         self.scales_chords = self.__scales_chords()
         
     @staticmethod
-    def create_object(path_scales:str = None, path_chords: str = None) -> "ScalesChords":
+    def create_object() -> "ScalesChords":
         
-        if path_scales == None:
-            path_scales = 'static/scales.json'
-        if path_chords == None:
-            path_chords = 'static/chords.json'
-
-        scales = Scales.load_scales(path_scales)
+        scales = Scales.load_scales()
         chords = Chords.load_chords()
 
         return ScalesChords(scales, chords)

@@ -1,4 +1,4 @@
-{
+all_chords = {
     "major": "0,4,7",
     "minor": "0,3,7",
     "dominant7": "0,4,7,10",

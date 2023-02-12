@@ -3,9 +3,10 @@
 mozna decydować, czy zwracane są trzydźwięki lub czterodźwięki
 
 """
-import json
 from dataclasses import dataclass, field
 from typing import List, Tuple
+
+from .structures.harmonies import all_harmonies
 
 
 
@@ -14,7 +15,7 @@ class Harmony:
     """A class holding harmony created on given harmony name and tonal key
     with methods to modify each attribute
 
-    Attributes
+    Attributes:
     ----------
     harmony_name: str
         harmony name derived from main scales
@@ -42,8 +43,7 @@ class Harmony:
     @staticmethod
     def load_from_json(harmony_name: str, tonal_key: str) -> "Harmony":
 
-        with open('harmonies.json', 'r') as handler:
-            harmony = json.load(handler)[harmony_name]
+        harmony = all_harmonies[harmony_name]
         
         chords_progression = harmony["progression"]
         steps = [int(elem) for elem in harmony["steps"].split(",")]
@@ -54,7 +54,7 @@ class Harmony:
         
         
     def __get_harmony_chords_progression(self, tonal_key: str, chords_progression: list, steps: list) -> List[Tuple[str, str]]:
-        """create harmony chords progression based on given variables"""
+        """Create harmony chords progression based on given variables"""
         
         def add_interval(tonal_key: str, interval: int) -> str:
             # internal function for moving tonal key by interval
@@ -90,28 +90,54 @@ class Harmony:
     
     
     def modify_tonal_key(self, tonal_key: str) -> None:
-        """change tonal key of the harmony"""
+        """Change tonal key of the harmony
+        
+        :param tonal_key: in what tonation harmony will be
+        :type tonal_key: str
+        """
         self.tonal_key = tonal_key
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
     def replace_chord(self, pos: int, new_chord: str) -> None:
-        """replace chord on given position by the new chord"""
+        """Replace chord on given position by the new chord
+        
+        :param pos: which harmony position will be replaced
+        :type pos: int
+        :param new_chord: name of the new chord
+        :type new_chord: str
+        """
         self.chords_progression[pos] = new_chord
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
     def modify_chord_pitch(self, pos: int, move_step: int) -> None:
-        """modify chord on given position by increasing/decreasing it's pitch"""
+        """Modify chord on given position by increasing/decreasing it's pitch
+        
+        :param pos: which harmony position will be modified
+        :type pos: int
+        :param move_step: how many halfnotes this position will be increased/decreased
+        :type move_step: int
+        """
         self.steps[pos] = self.steps[pos]  + move_step
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
     def delete_chord(self, pos: int) -> None:
-        """delete chord on given position"""
+        """Delete chord on given position
+        
+        :param pos: which harmony position will be deleted
+        :type pos: int
+        """
         del self.steps[pos]
         del self.chords_progression[pos]
         self.harmony_chords = self.__get_harmony_chords_progression(self.tonal_key, self.chords_progression, self.steps)
     
     def add_new_chord(self, step: int, new_chord: str) -> None:
-        """add chord at given harmony step"""
+        """Add new chord at given harmony step (if that step doesn't exists already)
+        
+        :param step: on which chromatic step to put in the chord
+        :type step: int
+        :param new_chord: name of the new chord
+        :type new_chord: str
+        """
         if step in self.steps:
             raise ValueError('There is an existing chord at this step')
         if not 0 < step < 11:

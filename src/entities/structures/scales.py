@@ -1,4 +1,4 @@
-{
+all_scales = {
     "modal_scales": {
         "ionian": {
             "steps": "0,2,4,5,7,9,11",

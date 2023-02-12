@@ -1,6 +1,7 @@
-import json
 from dataclasses import dataclass
 from typing import Dict, Union
+
+from .structures.scales import all_scales
 
 @dataclass
 class Scales:
@@ -13,7 +14,7 @@ class Scales:
 
 
     @staticmethod
-    def load_scales(path = None) -> "Scales":
+    def load_scales() -> "Scales":
 
         def shift_scale(scale, n = 0):
             nth_elem = scale[n]
@@ -25,15 +26,10 @@ class Scales:
         six_tone = {}
         pentatonic = {}
         all = {}
-        if path == None:
-            path = 'static/scales.json'
-        
-        with open(path, 'r') as handler:
-            scales = json.load(handler)
 
 
         # Modal part
-        modal_scales = scales['modal_scales']
+        modal_scales = all_scales['modal_scales']
 
         for name, struct in modal_scales.items():
             steps = list(map(int, struct['steps'].split(',')))
@@ -65,7 +61,7 @@ class Scales:
 
         # Other part
 
-        other_scales = scales['other_scales']
+        other_scales = all_scales['other_scales']
 
         for name, steps in other_scales.items():
             try:

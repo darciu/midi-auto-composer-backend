@@ -1,4 +1,4 @@
-{
+all_harmonies = {
     "major": {
         "progression": [
             "maj7",
