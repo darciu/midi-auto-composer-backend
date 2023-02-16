@@ -25,7 +25,7 @@ def get_tonation(tonation: str) -> str:
     """if tone_key value is random, randomly pick from all keys list"""
 
     if tonation not in ['c','c#','d','d#','e','f','f#','g','g#','a','a#','b','random']:
-        raise ValueError('Not invalid tone key!')
+        raise ValueError(f'Not invalid tone key ({tonation})!')
     elif tonation == 'random':
         return random.choice(list(tone_start.keys()))
     else:

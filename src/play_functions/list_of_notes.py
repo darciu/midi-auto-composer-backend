@@ -11,4 +11,4 @@ def play_list_of_notes(instrument: ScampInstrument, list_of_notes: list) -> None
         elif note_pitch < 65:
             instrument.play_note(note_pitch, 0.9, 2)
         else:
-            instrument.play_note(note_pitch, 0.8, 2)
+            instrument.play_note(note_pitch, 0.9, 2)

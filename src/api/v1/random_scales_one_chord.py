@@ -4,7 +4,7 @@ from scamp import Session
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import random
 
 from play_functions.simul_scale_chord import play_multiple_scales_chords
@@ -25,17 +25,17 @@ router = APIRouter()
 class RequestFields(BaseModel):
     playback_tempo: int = 3500
     midi_tempo: int = 120
-    scales: List[str] = ['ionian','mixolydian']
-    scale_tonation: str = 'a'
+    scales: List[str] = ['pentatonic_minor','pentatonic_major']
+    scale_tonation: str = 'random'
     chord: str = 'major'
-    chord_tonation: Optional[str] = 'a'
     quarternotes: int = 4
     move_scale_max: int = 2
-    repeat_n_times: int = 5
-    timeout: Optional[int] = None
+    repeat_n_times: int = 40
+    timeout: Optional[int]
     notes_range: tuple = (40, 81)
 
-def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonation: str, chord: list, chord_tonation: Optional[str], quarternotes: int, move_scale_max: int, repeat_n_times: int, timeout: Optional[int],notes_range: tuple):
+
+def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonation: str, chord: list, chord_tonation: Optional[str], quarternotes: int, move_scale_max: int, repeat_n_times: int, timeout: Optional[int], notes_range: tuple):
 
     playback_tempo = tempos[0]
     midi_tempo = tempos[1]
@@ -56,7 +56,6 @@ def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonati
 
     measures = []
     for _ in range(repeat_n_times):
-
         scale = random.choice(scales)
         measures.append(tuple([quarternotes, scale, scale_tonation, chord, chord_tonation]))
 
@@ -83,7 +82,7 @@ def func(fields: RequestFields, background_tasks: BackgroundTasks):
 
     chord = chords.all[fields.chord]
 
-    output_file_path = play_random_scales_one_chord(tempos, scales_list, fields.scale_tonation, chord, fields.chord_tonation, fields.quarternotes, fields.move_scale_max, fields.move_scale_max, fields.timeout, fields.notes_range)
+    output_file_path = play_random_scales_one_chord(tempos, scales_list, fields.scale_tonation, chord, None, fields.quarternotes, fields.move_scale_max, fields.repeat_n_times, fields.timeout, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 

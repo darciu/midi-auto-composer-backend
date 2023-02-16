@@ -16,18 +16,18 @@ def play_multiple_scales_chords(sess: Session, instruments: Tuple[ScampInstrumen
     
     prev_note_pitch = None
 
-    if timeout == None or timeout == 0:
-        for _ in range(repeat_n_times):
+    # if timeout == None or timeout == 0:
+    
 
-            for measure in measures:
-                prev_note_pitch = play_single_scale_chord_measure(sess, instruments, measure,  prev_note_pitch, move_scale_max, notes_range)
-    else:
+    for measure in measures:
+        prev_note_pitch = play_single_scale_chord_measure(sess, instruments, measure,  prev_note_pitch, move_scale_max, notes_range)
+    # else:
 
-        start_time = get_current_time()
-        for measure in itertools.cycle(measures):
-            current_time = get_current_time()
-            if not (current_time - start_time >= timeout):
-                prev_note_pitch = play_single_scale_chord_measure(sess, instruments, measure,  prev_note_pitch, move_scale_max, notes_range)
+    #     start_time = get_current_time()
+    #     for measure in itertools.cycle(measures):
+    #         current_time = get_current_time()
+    #         if not (current_time - start_time >= timeout):
+    #             prev_note_pitch = play_single_scale_chord_measure(sess, instruments, measure,  prev_note_pitch, move_scale_max, notes_range)
 
 
 
@@ -58,7 +58,7 @@ def play_single_scale_chord_measure(sess: Session, instruments: Tuple[ScampInstr
     
         sess.fork(play_list_of_notes, args=[instrument_solo, list_of_notes])
         sess.fork(play_background_chord, args=[
-            instrument_back, quarternotes, chord, chord_tonation, notes_range ,0.3])
+            instrument_back, quarternotes, chord, chord_tonation, notes_range ,0.5])
         sess.wait_for_children_to_finish()
 
     else:
