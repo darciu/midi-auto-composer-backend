@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from midiutil import MIDIFile
-from typing import Optional
 
 import scamp
 
@@ -13,6 +12,8 @@ from api.v1 import random_background_chords
 from api.v1 import random_scales_one_chord
 
 from api.v1.scales import get_scales
+from api.v1.chords import get_chords
+from api.v1.scales_chords import get_scales_chords
 
 app = FastAPI()
 
@@ -38,7 +39,8 @@ app.include_router(random_background_chords.router, prefix="/v1")
 app.include_router(random_scales_one_chord.router, prefix="/v1")
 
 app.include_router(get_scales.router, prefix="/v1/scales")
-
+app.include_router(get_chords.router, prefix="/v1/chords")
+app.include_router(get_scales_chords.router, prefix="/v1/get_scales_chords")
 
 
 @app.on_event("startup")

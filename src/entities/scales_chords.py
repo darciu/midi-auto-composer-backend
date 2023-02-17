@@ -12,8 +12,8 @@ class ScalesChords:
     Attributes:
     scales - a Scales class object
     chords - a Chords class object
-    chord_scales - a dictionary containing every chord with all scales matches to it
-    scale_chords - a dictionary containing every scale with all chords matches to it
+    chord_scales - a dictionary containing every chord with all scales matching it
+    scale_chords - a dictionary containing every scale with all chords matching it
     """
 
     scales: Scales
