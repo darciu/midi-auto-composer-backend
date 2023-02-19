@@ -42,9 +42,9 @@ def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonati
 
     sess = Session(tempo=playback_tempo)
 
-    instrument_solo = sess.new_part('cello')
+    instrument_solo = sess.new_part('Cello')
 
-    instrument_back = sess.new_part('piano')
+    instrument_back = sess.new_part('Jazz Guitar')
 
     instruments = instrument_solo, instrument_back
 

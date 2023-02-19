@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from typing import List
+from pydantic import Field
 
 from entities.scales import Scales
 
@@ -8,7 +9,7 @@ scales = Scales.load()
 router = APIRouter()
 
 @router.get("/scale_by_name/")
-def scale_by_name(scale_name: str) -> list:
+def scale_by_name(scale_name: str = Field(description="Scale's name")) -> list:
     """Get scale steps by scale name"""
     return scales.all.get(scale_name, ValueError('There is no such a scale!'))
 
@@ -38,6 +39,6 @@ def all_modals() -> List[str]:
     return list(scales.modal_by_name.keys())
 
 @router.get("/modal_sub_names/")
-def modal_sub_names(modal_name) -> List[str]:
+def modal_sub_names(modal_name = Field(description="Modal name (first scale's name that modal begins with)")) -> List[str]:
     """Get list of all scales by modal name"""
     return list(scales.modal_by_name.get(modal_name, ValueError('No such a modal!')).keys())

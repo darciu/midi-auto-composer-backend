@@ -12,11 +12,15 @@ RUN apt-get -y install pkg-config
 RUN apt-get -y install libasound2-dev
 RUN apt-get -y install libjack-dev
 
+
+
 RUN mkdir /code
 
-COPY ./ /code/
+COPY requirements.txt /code/
 
 RUN pip3.9 install -r /code/requirements.txt
+
+COPY ./ /code/
 
 WORKDIR /code/
 
