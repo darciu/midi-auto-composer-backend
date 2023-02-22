@@ -1,5 +1,4 @@
-from fastapi import APIRouter
-from pydantic import Field, BaseModel
+from fastapi import APIRouter, HTTPException
 
 from entities.scales_chords import ScalesChords
 
@@ -12,13 +11,15 @@ router = APIRouter()
 @router.get("/scales_matching_chord/{chord_name}")
 def scale_by_name(chord_name: str) -> list:
     """Get all scales matching given chord"""
-
-    return [*scales_chords.chord_scales.get(chord_name, ValueError('There is no such a chord!'))['matching_scales']]
+    if scales_chords.chord_scales.get(chord_name) == None:
+        raise HTTPException(status_code=404, detail="Invalid chord's name!")
+    return [*scales_chords.chord_scales.get(chord_name)['matching_scales']]
 
 
 @router.get("/chords_matching_scale/{scale_name}")
 def scale_by_name(scale_name: str) -> list:
     """Get all chords matching given scale"""
-
-    return [*scales_chords.scale_chords.get(scale_name, ValueError('There is no such a scale!'))['matching_chords']]
+    if scales_chords.scale_chords.get(scale_name) == None:
+        raise HTTPException(status_code=404, detail="Invalid scale's name!")
+    return [*scales_chords.scale_chords.get(scale_name)['matching_chords']]
 

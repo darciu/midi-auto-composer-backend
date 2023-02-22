@@ -1,6 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from typing import List
-from pydantic import Field, BaseModel
 from enum import Enum
 
 from entities.scales import Scales
@@ -20,18 +19,13 @@ router = APIRouter()
 @router.get("/scale_by_name/{scale_name}", summary='Scale by name')
 def scale_by_name(scale_name) -> list:
     """Get scale steps by scale name"""
-    return scales.all.get(scale_name, ValueError('There is no such a scale!'))
+    if scales.all.get(scale_name) == None:
+        raise HTTPException(status_code=404, detail="Invalid scale's name!")
+    return scales.all.get(scale_name)
 
 @router.get("/all_scales_names/",summary='All scales names')
 def all_scales_names() -> List[str]:
-    """Get list of all available scales filtering by parameters
-    
-    third - minor, major, all
-    fifth - diminished, perfect, augmented, all
-    seventh - minor, major, all
-
-    robić to z części wspólnej setów
-    """
+    """Get list of all available scales filtering by parameters"""
     return list(scales.all.keys())
 
 @router.get("/all_scales_names_seven_tone/")
@@ -57,4 +51,6 @@ def all_modals() -> List[str]:
 @router.get("/modal_sub_names/{modal_name}")
 def modal_sub_names(modal_name: AllModals) -> List[str]:
     """Get list of all scales names by given modal name"""
-    return list(scales.modal_by_name.get(modal_name, ValueError('No such a modal!')).keys())
+    if scales.modal_by_name.get(modal_name) == None:
+        raise HTTPException(status_code=404, detail="Invalid modal's name!")
+    return list(scales.modal_by_name.get(modal_name).keys())

@@ -58,7 +58,7 @@ def play_single_scale_chord_measure(sess: Session, instruments: Tuple[ScampInstr
     
         sess.fork(play_list_of_notes, args=[instrument_solo, list_of_notes])
         sess.fork(play_background_chord, args=[
-            instrument_back, quarternotes, chord, chord_tonation, notes_range ,0.5])
+            instrument_back, quarternotes, chord, chord_tonation, notes_range ,0.35])
         sess.wait_for_children_to_finish()
 
     else:
