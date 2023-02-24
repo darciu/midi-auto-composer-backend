@@ -6,7 +6,7 @@ mozna decydować, czy zwracane są trzydźwięki lub czterodźwięki
 from dataclasses import dataclass, field
 from typing import List, Tuple
 
-from .structures.harmonies import all_harmonies
+from .structures import all_harmonies
 
 
 

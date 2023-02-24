@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from typing import Dict, List
-from structures import all_chords
+from typing import Dict, List, Union
+from .structures import all_chords
 
 
 
@@ -54,3 +54,26 @@ class Chords:
         major_seventh = {name: struct for name, struct in all_chords.items() if 11 in struct}
 
         return Chords(all, minor, major, dimished_fifth, perfect_fifth, augmented_fifth, minor_seventh, major_seventh)
+
+    def filter_chords(self, filters: Union[List[str], list]) -> Dict[str, List[int]]:
+        """
+        Select chords by providing filters list (eg. minor, major)
+        
+        Parameters
+        ----------
+        filters : List[str]
+            List of strings of chords types. Available chord types: major, minor, dimished_fifth, perfect_fifth,
+            augmented_fifth, minor_seventh, major_seventh.
+        """
+
+        filters_dict = {'minor':self.minor
+            ,'major':self.major
+            ,'dimished_fifth':self.dimished_fifth
+            ,'perfect_fifth':self.perfect_fifth
+            ,'augmented_fifth':self.augmented_fifth
+            ,'minor_seventh':self.minor_seventh
+            ,'major_seventh':self.major_seventh}
+        filtered_chords = self.all.copy()
+        for fltr in filters:
+            filtered_chords = {x:filtered_chords[x] for x in filtered_chords if x in filters_dict[fltr]}
+        return filtered_chords

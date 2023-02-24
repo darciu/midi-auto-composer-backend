@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Union
 
-from .structures.scales import all_scales
+from .structures import all_scales
 
 @dataclass
 class Scales:
