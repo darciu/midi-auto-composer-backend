@@ -12,7 +12,7 @@ class Scales:
     eg. "ionian": [0,2,4,5,7,9,11]
 
     Attributes
-    -----------
+    ----------
     modal_by_name: dict
         Dictionary where keys are modal names and values are dictionaries with sub-modal name: steps.
     seven_tone: dict

@@ -54,10 +54,17 @@ class MoveScale:
     def normalize_array(self, values_list: Union[list,np.array]) -> np.array:
         """Normalize array so it sums up to 1
         
-        :param values_list: sequence of values to be normalized
-        :type values_list: Union[list, np.array]
-        :return: Numpy's array that sums up to 1
+        Parameters
+        ----------
+        values_list: Union[list, np.array]
+            sequence of values to be normalized
+        
+        Returns
+        -------
+        np.array
+            Numpy's array that sums up to 1.
         """
+        
         values_array = np.array(values_list)
         arr = values_array / values_array.min()
         return arr/ arr.sum()
@@ -86,12 +93,19 @@ class MoveScale:
     def find_new_note(self, prev_shift_note_index: int, tonal_scale: list, current_note_pitch: int) -> Tuple[int, int]:
         """Find new note pitch according to previous note pitch and tonal scale with certain probabilities
         
-        :param prev_shift_note_index: what was the last move on the tonal scale; this helps to prevent loops while playing
-        :type prev_shift_note_index: int
-        :param tonal_scale: list containing all notes pitches of playing tonal scale
-        :type tonal_scale: list
-        :param current_note_pitch: actually played note
-        :type current_note_pitch: int
+        Parameters
+        ----------
+        prev_shift_note_index : int
+            What was the last move on the tonal scale; this helps to prevent loops while playing.
+        tonal_scale: list
+            List containing all notes pitches of playing tonal scale.
+        current_note_pitch: int
+            Actually played note
+
+        Returns
+        -------
+        tuple of integers
+            First return is chosen new note pitch, while second return is what was the movement between that note and the previous one.
         """
 
         note_index = tonal_scale.index(current_note_pitch)

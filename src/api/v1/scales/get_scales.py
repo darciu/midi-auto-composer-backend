@@ -43,9 +43,9 @@ def all_scales_names_pentatonic() -> List[str]:
     """Get list of all pentatonic scales"""
     return list(scales.pentatonic.keys())
 
-@router.get("/all_modals/")
+@router.get("/all_modals_names/")
 def all_modals() -> List[str]:
-    """Get list of all modals"""
+    """Get list of all modals names"""
     return list(scales.modal_by_name.keys())
 
 @router.get("/modal_sub_names/{modal_name}")
