@@ -6,14 +6,22 @@ import numpy as np
 @dataclass
 class MoveScale:
     """A class containing probability board (list) used while choosing new random note.
-    There are three types of difficulty:
-     - easy: it is more probable to choose new note nearer than farther from actually playing note;
-     - normal: probability of choosing near and far notes is uniform;
-     - hard: farther notes are more likely to choose
+        There are three types of difficulty:
+        - easy: it is more probable to choose new note nearer than farther from actually playing note;
+        - normal: probability of choosing near and far notes is uniform;
+        - hard: farther notes are more likely to choose
 
-     Attributes:
-     move_scale_max: int
-        how distant scale steps are allowed while choosing new note (upwards and downwards)
+    Attributes
+    ----------
+    move_scale_max: int
+        how distant scale steps are allowed while choosing new note (upwards and downwards moves)
+    move_scale_board: list
+        initial array with possible moves on scale which looks like this: [1,2,3,3,2,1]
+        these numbers will be normalized (probas)
+    move_scale_probas: list
+        normalized (and while using modified) array with probabilites of moving through the scale
+
+    h1 and h2 are halves of before mentiones arrays
     """
     move_scale_max: int
     difficulty: Literal['easy','normal','hard'] = 'normal'

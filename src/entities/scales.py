@@ -37,7 +37,7 @@ class Scales:
         """Create Scales class object from static dictionary"""
 
         def shift_scale(scale: list, n = 0) -> List[int]:
-            """shift modal scale by n steps"""
+            """Shift modal scale by n steps"""
 
             nth_elem = scale[n]
             return sorted([elem + 12 if elem < 0 else elem for elem in [elem-nth_elem for elem in scale]])
