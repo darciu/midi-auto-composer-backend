@@ -1,23 +1,44 @@
 from dataclasses import dataclass
-from typing import Dict, Union
+from typing import Dict, Union, List
 
 from .structures import all_scales
 
 @dataclass
 class Scales:
+    """A class holding scales in dictionaries in form:
+    chord type (str) : list of integer steps
+
+    where steps are following building scale pitches
+    eg. "ionian": [0,2,4,5,7,9,11]
+
+    Attributes
+    -----------
+    modal_by_name: dict
+        Dictionary where keys are modal names and values are dictionaries with sub-modal name: steps.
+    seven_tone: dict
+        Dictionary storing all seven tone scales with corresponding scale steps.
+    six_tone: dict
+        Dictionary storing all six tone scales with corresponding scale steps.
+    pentatonic: dict
+        Dictionary storing all five tone scales with corresponding scale steps.
+    all: dict
+        Dictionary storing all scales with corresponding scale steps.
+    """
     modal_by_name: Dict[str,list]
     modal_by_order : Dict[int,Dict[str,Union[str,list]]]
-    seven_tone: Dict[str,list]
-    six_tone: Dict[str,list]
-    pentatonic: Dict[str,list]
-    all: Dict[str,list]
+    seven_tone: Dict[str, List[int]]
+    six_tone: Dict[str, List[int]]
+    pentatonic: Dict[str, List[int]]
+    all: Dict[str, List[int]]
 
 
     @staticmethod
     def load() -> "Scales":
         """Create Scales class object from static dictionary"""
 
-        def shift_scale(scale, n = 0):
+        def shift_scale(scale: list, n = 0) -> List[int]:
+            """shift modal scale by n steps"""
+
             nth_elem = scale[n]
             return sorted([elem + 12 if elem < 0 else elem for elem in [elem-nth_elem for elem in scale]])
 
@@ -33,13 +54,13 @@ class Scales:
         modal_scales = all_scales['modal_scales']
 
         for name, struct in modal_scales.items():
-            steps = list(map(int, struct['steps'].split(',')))
+            steps = struct['steps']
             modal_names = [name] + struct['other_modal_names'].split(',')
 
             temp_by_name = {}
             temp_by_order = {}
 
-            # iteracja po kolejnych stopniach
+            # iterate following scale steps
             for i in range(len(steps)):
 
                 if modal_names[i] in all.keys():
@@ -65,28 +86,17 @@ class Scales:
         other_scales = all_scales['other_scales']
 
         for name, steps in other_scales.items():
-            try:
-                steps_ = list(map(int, steps.split(',')))
-            except:
-                raise ValueError(steps)
+            
 
-            if len(steps_) == 7:
-                seven_tone.update({name:steps_})
-            elif len(steps_) == 6:
-                six_tone.update({name:steps_})
-            elif len(steps_) == 5:
-                pentatonic.update({name:steps_})
+            if len(steps) == 7:
+                seven_tone.update({name:steps})
+            elif len(steps) == 6:
+                six_tone.update({name:steps})
+            elif len(steps) == 5:
+                pentatonic.update({name:steps})
                 
-            all.update({name:steps_})
+            all.update({name:steps})
 
 
         return Scales(modal_by_name, modal_by_order, seven_tone, six_tone, pentatonic, all)
 
-
-
-
-        
-
-
-
-        
