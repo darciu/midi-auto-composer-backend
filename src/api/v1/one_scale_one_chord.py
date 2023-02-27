@@ -3,7 +3,7 @@ from scamp import Session
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import random
 
 from play_functions.scale_preview import play_scale_preview
@@ -23,20 +23,36 @@ scales_chords = ScalesChords.load()
 router = APIRouter()
 
 
-class RequestFields(BaseModel):
-    playback_tempo: int = 3500
-    midi_tempo: int = 120
-    scale: str = 'mixolydian'
-    scale_tonation: str = 'a'
-    chord: str = 'major'
-    chord_tonation: Optional[str] = 'a'
-    quarternotes: int = 4
-    move_scale_max: int = 2
-    scale_preview: bool = True
-    play_background_chord: bool = True
-    repeat_n_times: int = 4
-    timeout: Optional[int] = None
-    notes_range: tuple = (40, 81)
+class RequestFieldsOneScaleOneChord(BaseModel):
+    playback_tempo: int = Field(default=3500)
+    midi_tempo: int = Field(default=120, title='Recording file tempo')
+    scale: str = Field(default='mixolydian', title='Scale to be played')
+    scale_tonation: str = Field(default='random', title='Scales tonation')
+    chord: str = Field(default='major', title='Background chord')
+    quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
+    move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
+    scale_preview: bool = Field(default=True, title='Whether to play scale preview at the beginning')
+    play_background_chord: bool = Field(default=True, title='Play a chord in background')
+    repeat_n_times: int = Field(default= 40, title='How many repetitions of measure')
+    timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)
+    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "playback_tempo": 3500,
+                "midi_tempo": 120,
+                "scale": 'mixolydian',
+                "scale_tonation": "random",
+                "chord":"major",
+                "quarternotes": 4,
+                "move_scale_max": 2,
+                "scale_preview": True,
+                "play_background_chord": True,
+                "repeat_n_times": 40,
+                "notes_range": (40, 81)
+            }
+        }
 
 
 def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, chord: list, chord_tonation: Optional[str],
@@ -82,15 +98,16 @@ def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, ch
 
 
 @router.post("/one_scale_one_chord")
-def func(fields: RequestFields, background_tasks: BackgroundTasks):
-
+def one_scale_one_chord(fields: RequestFieldsOneScaleOneChord, background_tasks: BackgroundTasks):
+    """Play constant scale with a chord"""
+    
     tempos = (fields.playback_tempo, fields.midi_tempo)
 
     scale = scales.all[fields.scale]
     chord = chords.all[fields.chord]
     
 
-    output_file_path = play_one_scale_one_chord(tempos, scale, fields.scale_tonation, chord, fields.chord_tonation,
+    output_file_path = play_one_scale_one_chord(tempos, scale, fields.scale_tonation, chord, None,
                             fields.quarternotes, fields.move_scale_max, fields.scale_preview, fields.play_background_chord, fields.repeat_n_times,
                             fields.timeout, fields.notes_range)
 

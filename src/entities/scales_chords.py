@@ -8,12 +8,16 @@ class ScalesChords:
     """A class combining Scales and Chords classes also providing dictionaries which scales
     matches to particular chord and vice versa, what chords matches to particular scale
 
-
-    Attributes:
-    scales - a Scales class object
-    chords - a Chords class object
-    chord_scales - a dictionary containing every chord with all scales matching it
-    scale_chords - a dictionary containing every scale with all chords matching it
+    Attributes
+    ----------
+    scales: entities.scales.Scales
+        A Scales class object.
+    chords: entities.chords.Chords
+        A Chords class object.
+    chord_scales: dict
+        A dictionary containing every chord with all scales matching it.
+    scale_chords: dict
+        A dictionary containing every scale with all chords matching it.
     """
 
     scales: Scales

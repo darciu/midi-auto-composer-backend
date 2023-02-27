@@ -2,7 +2,7 @@ from scamp import Session
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import random
 
 
@@ -23,14 +23,27 @@ router = APIRouter()
 
 
 
-class RequestFields(BaseModel):
-    playback_tempo: int = 3500
-    midi_tempo: int = 120
-    scale: str = 'mixolydian'
-    scale_tonation: str = 'a'
-    pattern: list = [1,2,3]
-    play_upwards: bool = True
-    notes_range: tuple = (40, 81)
+class RequestFieldsPattern(BaseModel):
+    playback_tempo: int = Field(default=3500)
+    midi_tempo: int = Field(default=120, title='Recording file tempo')
+    scale: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
+    scale_tonation: str = Field(default='random', title='Scale tonation')
+    pattern: list = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
+    play_upwards: bool = Field(default=True, title='Should pattern be played upwards or downwards')
+    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "playback_tempo": 3500,
+                "midi_tempo": 120,
+                "scale": 'mixolydian',
+                "scale_tonation": "random",
+                "quarternotes": 4,
+                "play_upwards": True,
+                "notes_range": (40, 81)
+            }
+        }
 
 def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list, play_upwards: bool, notes_range: tuple) -> str:
 
@@ -59,8 +72,8 @@ def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list,
     
 
 @router.post("/pattern")
-def send_file(fields: RequestFields, background_tasks: BackgroundTasks):
-
+def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
+    """Playing pattern on scale basis"""
     tempos = (fields.playback_tempo, fields.midi_tempo)
 
     scale = scales.all[fields.scale]

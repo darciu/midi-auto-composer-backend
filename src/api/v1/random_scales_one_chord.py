@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Literal
 import random
 from scamp import Session
 from fastapi import APIRouter
@@ -22,17 +22,32 @@ scales_chords = ScalesChords.load()
 router = APIRouter()
 
 
-class RequestFields(BaseModel):
-    playback_tempo: int = 3500
-    midi_tempo: int = 120
-    scales: List[str] = ['pentatonic_minor','pentatonic_major']
-    scale_tonation: str = 'random'
-    chord: str = 'major'
-    quarternotes: int = 4
-    move_scale_max: int = 2
-    repeat_n_times: int = 40
-    timeout: Optional[int]
-    notes_range: tuple = (40, 81)
+class RequestFieldsRandomScalesOneChord(BaseModel):
+    playback_tempo: int = Field(default=3500)
+    midi_tempo: int = Field(default=120, title='Recording file tempo')
+    scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
+    scale_tonation: str = Field(default='random', title='Scales tonation')
+    chord: str = Field(default='major', title='Background chord')
+    quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
+    move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
+    repeat_n_times: int = Field(default= 40, title='How many repetitions of measure')
+    timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)
+    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "playback_tempo": 3500,
+                "midi_tempo": 120,
+                "scales": ['pentatonic_minor','pentatonic_major'],
+                "scale_tonation": "random",
+                "chord":"major",
+                "quarternotes": 4,
+                "move_scale_max": 2,
+                "repeat_n_times": 40,
+                "notes_range": (40, 81)
+            }
+        }
 
 
 def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonation: str, chord: list, chord_tonation: Optional[str], quarternotes: int, move_scale_max: int, repeat_n_times: int, timeout: Optional[int], notes_range: tuple):
@@ -71,7 +86,8 @@ def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonati
 
 
 @router.post("/random_scales_one_chord")
-def func(fields: RequestFields, background_tasks: BackgroundTasks):
+def random_scales_one_chord(fields: RequestFieldsRandomScalesOneChord, background_tasks: BackgroundTasks):
+    """One constant chord while playing given scales"""
 
     tempos = (fields.playback_tempo, fields.midi_tempo)
 

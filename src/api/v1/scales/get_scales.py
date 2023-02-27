@@ -44,7 +44,7 @@ def all_scales_names_pentatonic() -> List[str]:
     return list(scales.pentatonic.keys())
 
 @router.get("/all_modals_names/")
-def all_modals() -> List[str]:
+def all_modals_names() -> List[str]:
     """Get list of all modals names"""
     return list(scales.modal_by_name.keys())
 
