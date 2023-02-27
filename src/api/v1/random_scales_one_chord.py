@@ -85,7 +85,7 @@ def play_random_scales_one_chord(tempos: tuple, scales: List[list], scale_tonati
     return output_file_path
 
 
-@router.post("/random_scales_one_chord")
+@router.post("/random_scales_one_chord", tags=['play_modes'])
 def random_scales_one_chord(fields: RequestFieldsRandomScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 

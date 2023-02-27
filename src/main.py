@@ -15,7 +15,25 @@ from api.v1.scales import get_scales
 from api.v1.chords import get_chords
 from api.v1.scales_chords import get_scales_chords
 
-app = FastAPI()
+tags_metadata = [
+    {
+        "name": "play_modes",
+        "description": "Different playing modes for app frontend",
+    },
+    {
+        "name": "scales",
+    },
+    {
+        "name":"chords"
+    },
+    {
+        "name":'scales_chords',
+        "description":"Find matching scales to a single chord or chords to a single scale"
+    }
+]
+
+app = FastAPI(title='MIDI Auto Composer'
+              ,openapi_tags=tags_metadata)
 
 origins = [
     "http://localhost:3333",

@@ -97,7 +97,7 @@ def play_one_scale_one_chord(tempos: tuple, scale: list, scale_tonation: str, ch
     return output_file_path
 
 
-@router.post("/one_scale_one_chord")
+@router.post("/one_scale_one_chord", tags=['play_modes'])
 def one_scale_one_chord(fields: RequestFieldsOneScaleOneChord, background_tasks: BackgroundTasks):
     """Play constant scale with a chord"""
     

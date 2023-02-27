@@ -68,7 +68,7 @@ def play_multiple_scales_multiple_chords(tempos: tuple, measures: list, move_sca
     return output_file_path
 
 
-@router.post("/multiple_scales_multiple_chords")
+@router.post("/multiple_scales_multiple_chords", tags=['play_modes'])
 def multiple_scales_multiple_chords(fields: RequestFieldsMultipleScalesMultipleChords, background_tasks: BackgroundTasks):
     """Providing measures play different scales with different chords in loop"""
 

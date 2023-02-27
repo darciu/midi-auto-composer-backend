@@ -71,7 +71,7 @@ def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list,
     return output_file_path
     
 
-@router.post("/pattern")
+@router.post("/pattern", tags=['play_modes'])
 def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
     """Playing pattern on scale basis"""
     tempos = (fields.playback_tempo, fields.midi_tempo)

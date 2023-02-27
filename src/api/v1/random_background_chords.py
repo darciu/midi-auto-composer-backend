@@ -85,7 +85,7 @@ def play_random_background_chords(tempos: tuple, chords: List[Tuple[list, str]],
 
     return output_file_path
 
-@router.post("/random_background_chords")
+@router.post("/random_background_chords", tags=['play_modes'])
 def random_background_chords(fields: RequestFieldsBackgroundChords, background_tasks: BackgroundTasks):
     """Play chords randomly"""
 

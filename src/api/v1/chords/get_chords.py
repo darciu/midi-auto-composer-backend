@@ -7,7 +7,7 @@ chords = Chords.load()
 
 router = APIRouter()
 
-@router.get("/chord_by_name/{chord_name}")
+@router.get("/chord_by_name/{chord_name}", tags=['chords'])
 def chord_by_name(chord_name: str) -> List[int]:
     """Get chord steps by chord name"""
     if chords.all.get(chord_name) == None:
@@ -15,13 +15,13 @@ def chord_by_name(chord_name: str) -> List[int]:
     return chords.all.get(chord_name)
 
 
-@router.get("/all_chords_names/")
+@router.get("/all_chords_names/", tags=['chords'])
 def all_chords_names() -> List[str]:
     """Get list of all available chords"""
     return list(chords.all.keys())
 
 
-@router.get("/filter_chords/")
+@router.get("/filter_chords/", tags=['chords'])
 def filter_chords(chords_types: list = Query(default=[])) -> List[str]:
     """Selects chords by providing filters list as chords types (strings)
     
