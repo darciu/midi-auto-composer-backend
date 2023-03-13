@@ -1,21 +1,17 @@
 from scamp.instruments import ScampInstrument
 import random
 
+from entities.midi_composer import MIDIComposer
+
 from play_functions.helper_functions import create_tonal_scale_and_primes_lists, get_tonation
 
-# przenieść tutaj wytwarzanie tonal_chord
 
 def play_background_chord(instrument: ScampInstrument, quarternotes: int, chord_sequence: list, chord_tonation: str, notes_range: tuple, volume: float = 0.4) -> None:
-    """
-    Play background chord
 
-        Parameters:
-            instrument (ScampInstrument): An instance of ScampInstrument class
-            quarternotes (int): how many beats per measure there will be
-            tonal_chord (list): list of integers with given chord pitches according to exact tonation
-            volume (float): volume of playing background chord; ranges from 0 to 1
 
-    """
+    
+    tempo = 100
+    midi_obj = MIDIComposer(tempo, quarternotes, notes_range)
 
     chord_tonation = get_tonation(chord_tonation)
 

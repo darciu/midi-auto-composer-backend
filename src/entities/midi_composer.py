@@ -2,33 +2,95 @@ import random
 from midiutil import MIDIFile
 
 from entities.chords import Chords
+from entities.scales import Scales
+from entities.move_scale import MoveScale
 from play_functions.helper_functions import create_tonal_scale_and_primes_lists
 
-chords = Chords.load()
 
 # zamienić quarternotes na metrum, które będzie też zawierało łatwe do wydobycia wartości ćwierćnut
 # dodać kolejne bicia perkusyjne
+# sparametryzować volume dla każdego z kanałów
+# dodać wybór instrumentów
+# dodać metrodę obliczającą timeout w taktach
+
+chords = Chords.load()
+scales = Scales.load()
 
 class MIDIComposer:
-    def __init__(self, tempo, quarternotes, notes_range):
+    def __init__(self, tempo, quarternotes, notes_range, move_scale_max = 2, difficulty = 'normal'):
         self.tempo = tempo
         self.time_pointer = 0
         self.quarternotes = quarternotes
         self.notes_range = notes_range
+        self.move_scale_max = move_scale_max
+        self.difficulty = difficulty
         self.MIDIobj = MIDIFile(1)
         self.MIDIobj.addTempo(0, 0, tempo) # track, time, tempo
         
-    def add_melody_part(self, notes: list, volume: int, program: int):
+    
+    def add_random_melody_part(self, scales, program):
         # track = 0
-        # channel = 1
+        # channel = 0
         
         time = self.time_pointer
         self.MIDIobj.addProgramChange(0, 0, 0, program)
         
+        note_pitch = None
+        
+        for scale_name, scale_tonation in scales:
+            
+            note_pitch = self.add_single_measure_random_melody(scale_name, scale_tonation, note_pitch, time)
+            
+            time += self.quarternotes
+            
+    def add_single_measure_random_melody(self, scale_name, scale_tonation, prev_note_pitch, time):
+        
+        
+        notes, _ = self.find_random_notes(scale_name, scale_tonation, prev_note_pitch, None)
+        
+        last_note_pitch = notes[-1]
+        
+        volume = 0.7
+        
         for note in notes:
             self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
             time = time + 1
+        
+        return last_note_pitch
     
+    
+    def find_random_notes(self, scale_name, scale_tonation, note_pitch, shift_note_index):
+        
+        move_scale_obj = MoveScale(self.move_scale_max, self.difficulty)
+        
+        scale_sequence = scales.all.get(scale_name)
+        
+        tonal_scale, primes = create_tonal_scale_and_primes_lists(scale_sequence, scale_tonation, self.notes_range)
+        
+        
+        if note_pitch == None:
+            # first random note choosen from primes
+            note_pitch = random.choice(primes)
+            
+        elif note_pitch not in tonal_scale:
+            # most similar pitch to previous note pitch
+            note_pitch = min(tonal_scale, key=lambda x: abs(x-note_pitch))
+           
+        list_of_notes = []
+        
+        for _ in range(self.quarternotes):
+
+            # find new note pitch and what kind of shift it was
+            note_pitch, shift_note_index = move_scale_obj.find_new_note(
+                shift_note_index, tonal_scale, note_pitch)
+
+            list_of_notes.append(note_pitch)
+
+        # return shift_note_index in order to know what was the last shift of the note
+        return list_of_notes, shift_note_index
+
+        
+        
         
     # BACKGROUND CHORDS
     
@@ -37,7 +99,7 @@ class MIDIComposer:
         # channel = 1
         
         time = self.time_pointer
-        self.MIDIobj.addProgramChange(0, 2, time, program)
+        self.MIDIobj.addProgramChange(0, 1, time, program)
         
         for chord_name, chord_tonation in chords:
             self.add_single_chord(chord_name, chord_tonation, time)
@@ -106,9 +168,11 @@ class MIDIComposer:
             
     def arpeggio_chord(self, notes: list, time: int, volume: int, rhythm_value):
         for note in notes:
-            self.MIDIobj.addNote(0, 0, note, time, rhythm_value, int(volume*127))
+            self.MIDIobj.addNote(0, 1, note, time, rhythm_value, int(volume*127))
             time += random.randrange(10)/300
             
+        
+    
     # BASSLINE
     
     def add_bassline_part(self, chords, program):
@@ -153,8 +217,7 @@ class MIDIComposer:
             
             time += rhythm_value
                         
-
-    # PERCUSSION
+        
             
     def add_percussion_part(self, n_measures):
         # track = 0
@@ -162,67 +225,16 @@ class MIDIComposer:
         
         time = self.time_pointer
         
-        for i in range(n_measures):
-            
-            if self.quarternotes == 3:
-                self.add_single_percussion_three_quarter(time, i%2==0)
-            elif self.quarternotes == 4:
-                self.add_single_percussion_four_quarter(time, i%2==0)
-
-            time += self.quarternotes
-    
-    def add_single_percussion_three_quarter(self, time, measure_is_even: bool):
-        
-        if measure_is_even:
-            # kick
+        for _ in range(n_measures):
             self.MIDIobj.addNote(0,9,35,time, 2,65)
-
-            # hi-hat
-            self.MIDIobj.addNote(0,9,42,time+1, 2,65)
-            self.MIDIobj.addNote(0,9,42,time+2, 2,65)
-
-        else:
-            # snare
-            self.MIDIobj.addNote(0,9,40,time, 2,60)
-
-            # hi-hat
-            self.MIDIobj.addNote(0,9,42,time+1, 2,65)
-            self.MIDIobj.addNote(0,9,42,time+2, 2,65)
-            
-
-    def add_single_percussion_four_quarter(self, time, measure_is_even: bool):
-        
-        if measure_is_even:
-
-            # kick
-            self.MIDIobj.addNote(0,9,35,time, 2,65)
-
-            # snare
             self.MIDIobj.addNote(0,9,40,time+2, 2,60)
-
-            # hi-hat
+            
             self.MIDIobj.addNote(0,9,42,time, 2,65)
             self.MIDIobj.addNote(0,9,42,time+1, 2,65)
             self.MIDIobj.addNote(0,9,42,time+2, 2,55)
             self.MIDIobj.addNote(0,9,42,time+3, 2,65)
-
-        else:
-            # kick
-            self.MIDIobj.addNote(0,9,35,time, 2,65)
-            self.MIDIobj.addNote(0,9,35,time+1, 2,65)
-
-            # snare
-            self.MIDIobj.addNote(0,9,40,time+2, 2,60)
-
-            # hi-hat
-            self.MIDIobj.addNote(0,9,42,time, 2,65)
-            self.MIDIobj.addNote(0,9,42,time+1, 2,65)
-            self.MIDIobj.addNote(0,9,42,time+2, 2,55)
-            self.MIDIobj.addNote(0,9,42,time+3, 2,65)
-
-
+            time += 4
         
-    # OTHER METHODS
             
     def get_rhythm(self, possible_rhythms = [1,2], rhythms_weights = [1,1]):
         rhythm_sum = 0
@@ -234,8 +246,13 @@ class MIDIComposer:
                 rhythm.append(num)
         return rhythm
     
+    def timeout_to_n_repeats(self, tempo: int, timeout: int) -> int:
+
+        return int((tempo/self.quarternotes)*(timeout/60))
             
-    def midi_to_file(self):
-        with open("recording.mid", "wb") as output_file:
+    def midi_to_file(self, filepath: str):
+        with open(filepath, "wb") as output_file:
             self.MIDIobj.writeFile(output_file)
-     
+
+    def close_midi(self):
+        self.MIDIobj.close()
