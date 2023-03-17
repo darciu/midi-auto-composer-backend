@@ -9,14 +9,9 @@ import random
 from play_functions.simul_scale_chord import play_multiple_scales_chords
 from . import remove_file, convert_midi_file
 
-from entities.scales import Scales
-from entities.chords import Chords
-from entities.scales_chords import ScalesChords
 from entities.midi_composer import MIDIComposer
 
-scales = Scales.load()
-chords = Chords.load()
-scales_chords = ScalesChords.load()
+
 
 router = APIRouter()
 
@@ -32,7 +27,7 @@ class RequestFieldsMultipleScalesMultipleChords(BaseModel):
     quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
     move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
     difficulty: Difficulty = Field(default='normal', title='Higher level of difficulty means that random melody notes will have greate intervals')
-    bassline: bool = Field(default=True, title='Add bassine to the recording')
+    bassline: bool = Field(default=True, title='Add bassline to the recording')
     percussion: bool = Field(default=True, title='Add percusion beat to the recording')
     repeat_n_times: int = Field(default= 20, title='How many repetitions of measure')
     timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)

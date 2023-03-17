@@ -310,9 +310,9 @@ class MIDIComposer:
                 rhythm.append(num)
         return rhythm
     
-    def timeout_to_n_repeats(self, tempo: int, timeout: int) -> int:
+    def timeout_to_n_repeats(self, timeout: int, sequence_len: int = 1) -> int:
 
-        return int((tempo/self.quarternotes)*(timeout/60))
+        return int((self.tempo/(self.quarternotes*sequence_len))*(timeout/60))
             
     def midi_to_file(self, filepath: str):
         with open(filepath, "wb") as output_file:
