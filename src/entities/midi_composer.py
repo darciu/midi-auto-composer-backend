@@ -171,7 +171,71 @@ class MIDIComposer:
             self.MIDIobj.addNote(0, 1, note, time, rhythm_value, int(volume*127))
             time += random.randrange(10)/300
             
+
+
+    def add_scale_pattern_part(self, pattern: list, scale_name: str, tonation: str, play_upwards: bool, preview_pattern: bool, pause_between: bool = True):
         
+        scale_sequence = scales.all.get(scale_name)
+        
+        tonal_scale, _ = create_tonal_scale_and_primes_lists(scale_sequence, tonation, self.notes_range)
+
+        if play_upwards:
+            
+            if preview_pattern:
+                self.present_pattern(tonal_scale, pattern)
+            
+            time = self.time_pointer
+
+            for tonal_scale_step in tonal_scale:
+
+                if not tonal_scale.index(tonal_scale_step) + max(pattern) >= len(tonal_scale) + 1:
+
+                    for pattern_step in pattern:
+
+                        note_index = tonal_scale.index(tonal_scale_step) + pattern_step -1
+
+                        self.MIDIobj.addNote(0, 1, tonal_scale[note_index], time, 1, int(1*127))
+                        time += 1
+                    if pause_between:
+                        time += 1
+
+            self.MIDIobj.addNote(0, 1, tonal_scale[-1], time, 1, int(1*127))
+            
+        else:
+            
+            tonal_scale_reversed = list(reversed(tonal_scale))
+            
+            if preview_pattern:
+                self.present_pattern(tonal_scale_reversed, pattern)
+            
+            time = self.time_pointer
+            
+            for tonal_scale_step in tonal_scale_reversed:
+                
+                if not tonal_scale_reversed.index(tonal_scale_step) + max(pattern) -1 >= len(tonal_scale_reversed):
+                    
+                    for pattern_step in pattern:
+                        
+                        note_index = tonal_scale_reversed.index(tonal_scale_step) + pattern_step -1
+                        
+                        self.MIDIobj.addNote(0, 1, tonal_scale_reversed[note_index], time, 1, int(1*127))
+                        time += 1
+                    if pause_between:
+                        time += 1
+                        
+            self.MIDIobj.addNote(0, 1, tonal_scale_reversed[-1], time, 1, int(1*127))
+            
+    def present_pattern(self, tonal_scale: list, pattern: list):
+        
+        time = self.time_pointer
+
+        for i in range(len(pattern)):
+            
+            self.MIDIobj.addNote(0, 0, tonal_scale[pattern[i]-1], time, 1, int(1*127))
+            
+            time += 1
+        
+        self.time_pointer = time + 3 # wait three beats
     
     # BASSLINE
     

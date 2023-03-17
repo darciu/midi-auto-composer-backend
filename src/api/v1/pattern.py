@@ -8,11 +8,13 @@ import random
 
 
 from play_functions.scale_with_pattern import play_scale_with_pattern_upwards, play_scale_with_pattern_downwards
+from play_functions.helper_functions import get_tonation
 from . import remove_file, convert_midi_file
 
 from entities.scales import Scales
 from entities.chords import Chords
 from entities.scales_chords import ScalesChords
+from entities.midi_composer import MIDIComposer
 
 scales = Scales.load()
 chords = Chords.load()
@@ -24,49 +26,41 @@ router = APIRouter()
 
 
 class RequestFieldsPattern(BaseModel):
-    playback_tempo: int = Field(default=3500)
-    midi_tempo: int = Field(default=120, title='Recording file tempo')
-    scale: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
-    scale_tonation: str = Field(default='random', title='Scale tonation')
+    tempo: int = Field(default=120, title='Recording file tempo')
     pattern: list = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
+    scale_name: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
+    tonation: str = Field(default='random', title='Scale tonation')
     play_upwards: bool = Field(default=True, title='Should pattern be played upwards or downwards')
+    preview_pattern: bool = Field(default=True, title='Play pattern preview')
+    pause_between: bool = Field(default=True, title='There is always one quarternote pause added between pattern played')
     notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
 
     class Config:
         schema_extra = {
             "example": {
-                "playback_tempo": 3500,
-                "midi_tempo": 120,
-                "scale": 'mixolydian',
-                "scale_tonation": "random",
-                "quarternotes": 4,
+                "tempo": 120,
+                "scale_name": 'mixolydian',
+                "tonation": "random",
                 "play_upwards": True,
+                "preview_pattern": True,
+                "pause_between": True,
                 "notes_range": (40, 81)
             }
         }
 
-def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list, play_upwards: bool, notes_range: tuple) -> str:
+def play_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, play_upwards: bool, preview_pattern: bool, pause_between: bool, notes_range: tuple) -> str:
 
-    playback_tempo = tempos[0]
-    midi_tempo = tempos[1]
+    tonation = get_tonation(tonation)
 
-    sess = Session(tempo=playback_tempo)
+    midi_composer = MIDIComposer(tempo, 1, notes_range)
 
-    instrument_solo = sess.new_part('cello')
+    midi_composer.add_scale_pattern_part(pattern, scale_name, tonation, play_upwards, preview_pattern, pause_between)
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
-    sess.start_transcribing()
+    midi_composer.midi_to_file(output_file_path)
 
-    if play_upwards:
-
-        play_scale_with_pattern_upwards(instrument_solo, scale, scale_tonation, pattern, notes_range)
-
-    else:
-
-        play_scale_with_pattern_downwards(instrument_solo, scale, scale_tonation, pattern, notes_range)
-
-    sess.stop_transcribing().save_midi_file(output_file_path, playback_tempo, midi_tempo)
+    midi_composer.close_midi()
 
     return output_file_path
     
@@ -74,11 +68,8 @@ def play_pattern(tempos: tuple, scale: list, scale_tonation: str, pattern: list,
 @router.post("/pattern", tags=['play_modes'])
 def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
     """Playing pattern on scale basis"""
-    tempos = (fields.playback_tempo, fields.midi_tempo)
-
-    scale = scales.all[fields.scale]
-    
-    output_file_path = play_pattern(tempos, scale, fields.scale_tonation, fields.pattern, fields.play_upwards, fields.notes_range)
+        
+    output_file_path = play_pattern(fields.tempo, fields.pattern, fields.scale_name, fields.tonation, fields.play_upwards, fields.preview_pattern, fields.pause_between, fields.notes_range)
     
     output_file_path = convert_midi_file(output_file_path)
 

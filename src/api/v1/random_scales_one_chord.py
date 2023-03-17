@@ -40,7 +40,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
     difficulty: Difficulty = Field(default='normal', title='Higher level of difficulty means that random melody notes will have greate intervals')
     bassline: bool = Field(default=True, title='Add bassine to the recording')
     percussion: bool = Field(default=True, title='Add percusion beat to the recording')
-    repeat_n_times: int = Field(default= 40, title='How many repetitions of measure')
+    repeat_n_times: Optional[int] = Field(default= 40, title='How many repetitions of measure')
     timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)
     notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
 
@@ -62,11 +62,14 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
         }
 
 
-def play_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, repeat_n_times: int, timeout: Optional[int], notes_range: tuple):
+def play_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple):
 
     tonation = get_tonation(tonation)
 
     midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
+
+    if timeout:
+        repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
 
 
     scales_input = []
