@@ -27,8 +27,8 @@ router = APIRouter()
 class RequestFieldsRandomScalesOneChord(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo')
     scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
-    tonation: str = Field(default='random', title='Tonation')
     chord_name: str = Field(default='major', title='Background chord name')
+    tonation: str = Field(default='random', title='Tonation')
     quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
     move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
     difficulty: Difficulty = Field(default='normal', title='Higher level of difficulty means that random melody notes will have greate intervals')
@@ -43,8 +43,8 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
             "example": {
                 "tempo": 120,
                 "scales": ['pentatonic_minor','pentatonic_major'],
-                "tonation": "random",
                 "chord_name":"major",
+                "tonation": "random",
                 "quarternotes": 4,
                 "move_scale_max": 2,
                 "difficulty": "normal",
