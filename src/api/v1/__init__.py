@@ -1,6 +1,30 @@
 import os
-from midi2audio import FluidSynth
+from enum import Enum
 import subprocess
+
+from midi2audio import FluidSynth
+
+
+class Difficulty(str, Enum):
+    ionian = "easy"
+    harmonic_minor = "normal"
+    melodic_minor = "hard"
+
+class Tonation(str, Enum):
+    c = "c"
+    c_sharp = "c#"
+    d = "d"
+    d_sharp = "d#"
+    e = "e"
+    f = "f"
+    f_sharp = "f#"
+    g = "g"
+    g_sharp = "g#"
+    a = "a"
+    a_sharp = "a#"
+    b = "b"
+    random = "random"
+
 
 def remove_file(path: str) -> None:
 

@@ -1,24 +1,18 @@
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
-from enum import Enum
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from typing import Optional, List, Tuple
+from typing import Optional
 import random
 
-from play_functions.simul_scale_chord import play_multiple_scales_chords
+
 from . import remove_file, convert_midi_file
+from . import Difficulty
 
 from entities.midi_composer import MIDIComposer
 
-
-
 router = APIRouter()
 
-class Difficulty(str, Enum):
-    ionian = "easy"
-    harmonic_minor = "normal"
-    melodic_minor = "hard"
 
 class RequestFieldsMultipleScalesMultipleChords(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo')

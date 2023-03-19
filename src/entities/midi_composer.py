@@ -1,10 +1,12 @@
 import random
+from typing import Tuple
+
 from midiutil import MIDIFile
+
 
 from entities.chords import Chords
 from entities.scales import Scales
 from entities.move_scale import MoveScale
-from play_functions.helper_functions import create_tonal_scale_and_primes_lists
 
 
 # zamienić quarternotes na metrum, które będzie też zawierało łatwe do wydobycia wartości ćwierćnut
@@ -26,6 +28,21 @@ class MIDIComposer:
         self.difficulty = difficulty
         self.MIDIobj = MIDIFile(1)
         self.MIDIobj.addTempo(0, 0, tempo) # track, time, tempo
+        self.tone_start: dict = {
+                                    'c':48,
+                                    'c#':49,
+                                    'd':50,
+                                    'd#':51,
+                                    'e':40,
+                                    'f':41,
+                                    'f#':42,
+                                    'g':43,
+                                    'g#':44,
+                                    'a':45,
+                                    'a#':46,
+                                    'b':47,
+                                }
+
         
     
     def add_random_melody_part(self, scales, program):
@@ -65,7 +82,7 @@ class MIDIComposer:
         
         scale_sequence = scales.all.get(scale_name)
         
-        tonal_scale, primes = create_tonal_scale_and_primes_lists(scale_sequence, scale_tonation, self.notes_range)
+        tonal_scale, primes = self.create_tonal_scale_and_primes_lists(scale_sequence, scale_tonation, self.notes_range)
         
         
         if note_pitch == None:
@@ -110,7 +127,7 @@ class MIDIComposer:
         
         chord_sequence = chords.all.get(chord_name)
         
-        tonal_chord, _ = create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
+        tonal_chord, _ = self.create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
         
         # chord in two first octaves
         chord_sequence = [tone for tone in tonal_chord if tone <= tonal_chord[0]+24 and tone > tonal_chord[0]]
@@ -177,7 +194,7 @@ class MIDIComposer:
         
         scale_sequence = scales.all.get(scale_name)
         
-        tonal_scale, _ = create_tonal_scale_and_primes_lists(scale_sequence, tonation, self.notes_range)
+        tonal_scale, _ = self.create_tonal_scale_and_primes_lists(scale_sequence, tonation, self.notes_range)
 
         if play_upwards:
             
@@ -257,7 +274,7 @@ class MIDIComposer:
     
         chord_sequence = chords.all.get(chord_name)
         
-        tonal_chord, _ = create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
+        tonal_chord, _ = self.create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
         
         chord_sequence = [tone for tone in tonal_chord if tone <= tonal_chord[0]+12 and tone > tonal_chord[0]]
         
@@ -309,6 +326,29 @@ class MIDIComposer:
                 rhythm_sum += num
                 rhythm.append(num)
         return rhythm
+    
+
+    def get_tonation(self, tonation: str) -> str:
+        """if tone_key value is random, randomly pick from all keys list"""
+
+        if tonation not in ['c','c#','d','d#','e','f','f#','g','g#','a','a#','b','random']:
+            raise ValueError(f'Not invalid tone key ({tonation})!')
+        elif tonation == 'random':
+            return random.choice(list(self.tone_start.keys()))
+        else:
+            return tonation
+        
+
+    def create_tonal_scale_and_primes_lists(self, scale: list, scale_tonation: str, notes_range: tuple) -> Tuple[list, list]:
+        """return list of tonal scale with all notes and also primes pitches within range of notes"""
+
+        min_notes_range = notes_range[0]
+        max_notes_range = notes_range[1]
+        primes = list(range(self.tone_start[scale_tonation],max_notes_range+1,12))
+        all_tones = [prime + tone for tone in scale for prime in primes]
+        all_tones = [x for x in all_tones if x <= max_notes_range and x >= min_notes_range]
+        
+        return sorted(all_tones), sorted(primes)
     
     def timeout_to_n_repeats(self, timeout: int, sequence_len: int = 1) -> int:
 

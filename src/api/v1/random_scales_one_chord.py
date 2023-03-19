@@ -1,24 +1,17 @@
-from typing import List, Optional, Literal
+from typing import List, Optional
 import random
-from scamp import Session
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
 from pydantic import BaseModel, Field
-from enum import Enum
 import random
 
-from play_functions.simul_scale_chord import play_multiple_scales_chords
-from play_functions.helper_functions import get_tonation
+
 from . import remove_file, convert_midi_file
+from . import Difficulty, Tonation
 
 from entities.midi_composer import MIDIComposer
 
-
-class Difficulty(str, Enum):
-    ionian = "easy"
-    harmonic_minor = "normal"
-    melodic_minor = "hard"
 
 
 router = APIRouter()
@@ -28,7 +21,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo')
     scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
     chord_name: str = Field(default='major', title='Background chord name')
-    tonation: str = Field(default='random', title='Tonation')
+    tonation: Tonation = Field(default='random', title='Tonation')
     quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
     move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
     difficulty: Difficulty = Field(default='normal', title='Higher level of difficulty means that random melody notes will have greate intervals')
@@ -56,11 +49,13 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
         }
 
 
-def play_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple):
+def compose_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple):
 
-    tonation = get_tonation(tonation)
+    
 
     midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
+
+    tonation = midi_composer.get_tonation(tonation)
 
     if timeout:
         repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
@@ -96,7 +91,7 @@ def play_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str,
 def random_scales_one_chord(fields: RequestFieldsRandomScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 
-    output_file_path = play_random_scales_one_chord(fields.tempo, fields.scales, fields.chord_name, fields.tonation, fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
+    output_file_path = compose_random_scales_one_chord(fields.tempo, fields.scales, fields.chord_name, fields.tonation, fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 

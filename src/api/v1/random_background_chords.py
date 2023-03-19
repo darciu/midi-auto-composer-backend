@@ -38,7 +38,7 @@ class RequestFieldsBackgroundChords(BaseModel):
         }
 
 
-def play_random_background_chords(tempo: int, chords: list, quarternotes: int, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple) -> str:
+def compose_random_background_chords(tempo: int, chords: list, quarternotes: int, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple) -> str:
 
 
     midi_composer = MIDIComposer(tempo, quarternotes, notes_range)
@@ -71,7 +71,7 @@ def play_random_background_chords(tempo: int, chords: list, quarternotes: int, b
 def random_background_chords(fields: RequestFieldsBackgroundChords, background_tasks: BackgroundTasks):
     """Play chords randomly"""
 
-    output_file_path = play_random_background_chords(fields.tempo, fields.chords, fields.quarternotes, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
+    output_file_path = compose_random_background_chords(fields.tempo, fields.chords, fields.quarternotes, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 

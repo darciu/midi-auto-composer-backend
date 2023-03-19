@@ -1,32 +1,23 @@
 from typing import Optional
-from scamp import Session
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
 from pydantic import BaseModel, Field
-from enum import Enum
 import random
 
-from play_functions.scale_preview import play_scale_preview
-from play_functions.simul_scale_chord import play_multiple_scales_chords
-from play_functions.helper_functions import get_tonation
+
 from . import remove_file, convert_midi_file
+from . import Difficulty, Tonation
 
 from entities.midi_composer import MIDIComposer
 
-
 router = APIRouter()
-
-class Difficulty(str, Enum):
-    ionian = "easy"
-    harmonic_minor = "normal"
-    melodic_minor = "hard"
 
 class RequestFieldsOneScaleOneChord(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo')
     scale_name: str = Field(default='mixolydian', title='Scale to be played')
     chord_name: str = Field(default='major', title='Background chord')
-    tonation: str = Field(default='random', title='Tonation')
+    tonation: Tonation = Field(default='random', title='Tonation')
     quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
     move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
     difficulty: Difficulty = Field(default='normal', title='Higher level of difficulty means that random melody notes will have greate intervals')
