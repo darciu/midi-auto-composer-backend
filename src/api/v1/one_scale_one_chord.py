@@ -53,10 +53,12 @@ def play_one_scale_one_chord(tempo: int, scale_name: list, chord_name: list, ton
 
     
 
-    tonation = get_tonation(tonation)
+    
 
 
     midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
+
+    tonation = midi_composer.get_tonation(tonation)
 
     if timeout:
         repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
