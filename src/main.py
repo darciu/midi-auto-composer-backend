@@ -56,5 +56,5 @@ app.include_router(random_scales_one_chord.router, prefix="/v1")
 
 app.include_router(get_scales.router, prefix="/v1/scales")
 app.include_router(get_chords.router, prefix="/v1/chords")
-app.include_router(get_scales_chords.router, prefix="/v1/get_scales_chords")
+app.include_router(get_scales_chords.router, prefix="/v1/scales_chords")
 
