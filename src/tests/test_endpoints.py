@@ -44,10 +44,7 @@ def test_random_scales_one_chord_response():
 
 # GET ENDPOINTS
 
-
-
 ## SCALES
-
 
 def test_scale_by_name(scales):
     for scale_name in scales.all.keys():
@@ -107,8 +104,8 @@ def test_filter_chords(pairs):
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
-## SCALES CHORDS
 
+## SCALES CHORDS
 
 def test_scales_matching_chord(chords):
     for chord_name in chords.all.keys():
