@@ -1,41 +1,17 @@
-from typing import List, Tuple, Optional
+from typing import Optional
 import random
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from pydantic import BaseModel, Field
 import random
 
 from . import remove_file, convert_midi_file
+from .schemas import RequestFieldsChordsSequence
 
 from entities.midi_composer import MIDIComposer
 
 
 router = APIRouter()
-
-
-class RequestFieldsChordsSequence(BaseModel):
-    tempo: int = Field(default=120, title='Recording file tempo')
-    chords: List[Tuple[str, str]] = Field(default=[('major', 'c'), ('dominant7', 'f')], title='Chords to play')
-    quarternotes: int = Field(default= 4, title='How many quarternotes per measure')
-    bassline: bool = Field(default=True, title='Add bassline to the recording')
-    percussion: bool = Field(default=True, title='Add percusion beat to the recording')
-    repeat_n_times: int = Field(default= 20, title='How many repetitions of chords sequence')
-    timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)
-    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "midi_tempo": 120,
-                "chords": [('major', 'c'), ('dominant7', 'f')],
-                "quarternotes": 4,
-                "bassline": True,
-                "percussion": True,
-                "repeat_n_times": 20,
-                "notes_range": (40, 81)
-            }
-        }
 
 
 def compose_background_chords(tempo: int, chords: list, quarternotes: int, bassline: bool, percussion: bool, repeat_n_times: Optional[int], timeout: Optional[int], notes_range: tuple) -> str:

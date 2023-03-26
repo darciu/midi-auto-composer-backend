@@ -9,9 +9,9 @@ from api.v1 import pattern
 from api.v1 import random_background_chords
 from api.v1 import random_scales_one_chord
 
-from api.v1.scales import get_scales
-from api.v1.chords import get_chords
-from api.v1.scales_chords import get_scales_chords
+from api.v1 import get_scales
+from api.v1 import get_chords
+from api.v1 import get_scales_chords
 
 tags_metadata = [
     {

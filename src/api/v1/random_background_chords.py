@@ -27,7 +27,7 @@ class RequestFieldsBackgroundChords(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "midi_tempo": 120,
+                "tempo": 120,
                 "chords": [('major', 'c'), ('dominant7', 'f')],
                 "quarternotes": 4,
                 "bassline": True,
