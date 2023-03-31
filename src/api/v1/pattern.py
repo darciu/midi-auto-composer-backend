@@ -1,37 +1,14 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
-from pydantic import BaseModel, Field
 import random
 
 from . import remove_file, convert_midi_file
 from entities.midi_composer import MIDIComposer
-from . import Tonation
 
 router = APIRouter()
 
-class RequestFieldsPattern(BaseModel):
-    tempo: int = Field(default=120, title='Recording file tempo')
-    pattern: list = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
-    scale_name: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
-    tonation: Tonation = Field(default='random', title='Scale tonation')
-    play_upwards: bool = Field(default=True, title='Should pattern be played upwards or downwards')
-    preview_pattern: bool = Field(default=True, title='Play pattern preview')
-    pause_between: bool = Field(default=True, title='There is always one quarternote pause added between pattern played')
-    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "tempo": 120,
-                "scale_name": 'mixolydian',
-                "tonation": "random",
-                "play_upwards": True,
-                "preview_pattern": True,
-                "pause_between": True,
-                "notes_range": (40, 81)
-            }
-        }
+from .schemas import RequestFieldsPattern
 
 def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, play_upwards: bool, preview_pattern: bool, pause_between: bool, notes_range: tuple) -> str:
 
