@@ -47,7 +47,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/midi_auto_composer:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/midi_auto_composer:latest
           
 
 
