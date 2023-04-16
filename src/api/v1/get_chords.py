@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
-from typing import List, Union
+from typing import List
 
 from entities.chords import Chords
 

@@ -1,69 +1,51 @@
-from scamp import Session
-from fastapi import APIRouter
-from pydantic import BaseModel, Field
-from fastapi.responses import FileResponse
-from starlette.background import BackgroundTasks
-from typing import Optional, List, Tuple
 import random
 
-from play_functions.simul_scale_chord import play_multiple_scales_chords
+from fastapi import APIRouter
+from fastapi.responses import FileResponse
+from starlette.background import BackgroundTasks
+
 from . import remove_file, convert_midi_file
-
-from entities.scales import Scales
-from entities.chords import Chords
-from entities.scales_chords import ScalesChords
-
-scales = Scales.load()
-chords = Chords.load()
-scales_chords = ScalesChords.load()
+from .schemas import RequestFieldsMultipleScalesMultipleChords
+from entities.midi_composer import MIDIComposer
 
 router = APIRouter()
 
-class RequestFieldsMultipleScalesMultipleChords(BaseModel):
-    playback_tempo: int = Field(default=3500)
-    midi_tempo: int = Field(default=120, title='Recording file tempo')
-    measures: List[Tuple[int,list,str,list,Optional[str]]] = Field(default=[(4, scales.all['aeolian'], 'a', chords.all['minor'], None),
-                                  (4, scales.all['ionian'], 'c', chords.all['major'], None)], title='Measures as tuple of: quarternotes, scale, scale tonation, chord, optional chord tonation')
-    move_scale_max: int = Field(default= 2, title='Maximum movement through the scale steps')
-    repeat_n_times: int = Field(default= 40, title='How many repetitions of measure')
-    timeout: Optional[int] = Field(default=None, title='Optional timeout', nullable=True)
-    notes_range: tuple = Field(default=(40, 81), title='Scales pitch range')
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "playback_tempo": 3500,
-                "midi_tempo": 120,
-                "measures": [(4, scales.all['aeolian'], 'a', chords.all['minor'], None),(4, scales.all['ionian'], 'c', chords.all['major'], None)],
-                "move_scale_max": 2,
-                "repeat_n_times": 40,
-                "notes_range": (40, 81)
-            }
-        }
+def play_multiple_scales_multiple_chords(tempo: int, quarternotes: int,  scales: list, chords: str, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, repeat_n_times: int, timeout: int, notes_range: tuple) -> str:
 
+    if len(scales) == len(chords):
+        sequence_len = len(scales)
+    else:
+        raise ValueError('Scales and chords are not equal')
 
+    midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
 
-def play_multiple_scales_multiple_chords(tempos: tuple, measures: list, move_scale_max: int, repeat_n_times: int, timeout: int, notes_range: tuple) -> str:
+    if timeout:
+        repeat_n_times = midi_composer.timeout_to_n_repeats(timeout, sequence_len)
 
-    playback_tempo = tempos[0]
-    midi_tempo = tempos[1]
+    scales_input = scales*repeat_n_times
 
-    sess = Session(tempo=playback_tempo)
+    chords_input = chords*repeat_n_times
 
-    instrument_solo = sess.new_part('cello')
+    # odpowiednia walidacja
 
-    instrument_back = sess.new_part('piano')
+    midi_composer.add_random_melody_part(scales_input,42)
 
-    instruments = instrument_solo, instrument_back
+    midi_composer.add_background_chords_part(chords_input, 2)
+
+    if bassline:
+        midi_composer.add_bassline_part(chords_input, 33)
+
+    if percussion:
+        midi_composer.add_percussion_part(repeat_n_times*sequence_len)
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
-    sess.start_transcribing()
+    midi_composer.midi_to_file(output_file_path)
 
-    play_multiple_scales_chords(
-        sess, instruments, measures, move_scale_max, repeat_n_times, timeout, notes_range)
+    midi_composer.close_midi()
 
-    sess.stop_transcribing().save_midi_file(output_file_path, playback_tempo, midi_tempo)
+    
 
     return output_file_path
 
@@ -72,12 +54,8 @@ def play_multiple_scales_multiple_chords(tempos: tuple, measures: list, move_sca
 def multiple_scales_multiple_chords(fields: RequestFieldsMultipleScalesMultipleChords, background_tasks: BackgroundTasks):
     """Providing measures play different scales with different chords in loop"""
 
-    notes_range = (40, 81)
 
-    tempos = (fields.playback_tempo, fields.midi_tempo)
-
-    output_file_path = play_multiple_scales_multiple_chords(
-        tempos, fields.measures, fields.move_scale_max, fields.repeat_n_times, fields.timeout, notes_range)
+    output_file_path = play_multiple_scales_multiple_chords(fields.tempo, fields.quarternotes, fields.scales, fields.chords, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 
