@@ -21,9 +21,9 @@ def timeout_or_repeat_n_times(cls, values: dict) -> dict:
 
 
 class Difficulty(str, Enum):
-    ionian = "easy"
-    harmonic_minor = "normal"
-    melodic_minor = "hard"
+    easy = "easy"
+    normal = "normal"
+    hard = "hard"
 
 class Tonation(str, Enum):
     c = "c"
