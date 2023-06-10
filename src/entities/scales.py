@@ -13,23 +13,25 @@ class Scales:
 
     Attributes
     ----------
-    modal_by_name: dict
-        Dictionary where keys are modal names and values are dictionaries with sub-modal name: steps.
-    seven_tone: dict
-        Dictionary storing all seven tone scales with corresponding scale steps.
-    six_tone: dict
-        Dictionary storing all six tone scales with corresponding scale steps.
-    pentatonic: dict
-        Dictionary storing all five tone scales with corresponding scale steps.
-    all: dict
-        Dictionary storing all scales with corresponding scale steps.
+    modals: dict
+        Dictionary where keys are modal names (first scale name) and values are lists of other sub-modal scales names.
+    seven_tone: list
+        List of all seven tone scales.
+    six_tone: list
+        List of all six tone scales.
+    pentatonic: list
+        List of all five tone scales.
+    all: list
+        List of all scales.
+    detailed: dict
+        For given scale name see details like scale steps, scale aliases.
     """
-    modal_by_name: Dict[str,list]
-    modal_by_order : Dict[int,Dict[str,Union[str,list]]]
-    seven_tone: Dict[str, List[int]]
-    six_tone: Dict[str, List[int]]
-    pentatonic: Dict[str, List[int]]
-    all: Dict[str, List[int]]
+    modals: Dict[str,list]
+    seven_tone: List[str]
+    six_tone: List[str]
+    pentatonic: List[str]
+    all: List[str]
+    detailed: Dict[str, dict]
 
 
     @staticmethod
@@ -42,12 +44,12 @@ class Scales:
             nth_elem = scale[n]
             return sorted([elem + 12 if elem < 0 else elem for elem in [elem-nth_elem for elem in scale]])
 
-        modal_by_name = {}
-        modal_by_order = {}
-        seven_tone = {}
-        six_tone = {}
-        pentatonic = {}
-        all = {}
+        modals = {}
+        seven_tone = []
+        six_tone = []
+        pentatonic = []
+        all = []
+        detailed = {}
 
 
         # Modal part
@@ -56,47 +58,52 @@ class Scales:
         for name, struct in modal_scales.items():
             steps = struct['steps']
             modal_names = [name] + struct['other_modal_names'].split(',')
+            aliases_eng = struct['aliases_eng'].split(',')
+            aliases_pl = struct['aliases_pl'].split(',')
 
-            temp_by_name = {}
-            temp_by_order = {}
+            modals.update({name:struct['other_modal_names'].split(',')})
 
             # iterate following scale steps
             for i in range(len(steps)):
 
-                if modal_names[i] in all.keys():
+                if modal_names[i] in detailed.keys():
                     raise NameError(f'Two scales with the same name! {modal_names[i]}')
                 
-                temp_by_name.update({modal_names[i]:shift_scale(steps, n=i)})
-                temp_by_order.update({i+1:{'name':modal_names[i],'scale':shift_scale(steps, n=i)}})
+                detailed.update({modal_names[i]:{"steps":shift_scale(steps, n=i)
+                                                 ,"alias_eng":aliases_eng[i]
+                                                 ,"alias_pl":aliases_pl[i]}})
 
                 if len(steps) == 7:
-                    seven_tone.update({modal_names[i]:shift_scale(steps, n=i)})
+                    seven_tone.append(modal_names[i])
                 elif len(steps) == 6:
-                    six_tone.update({modal_names[i]:shift_scale(steps, n=i)})
+                    six_tone.append(modal_names[i])
                 elif len(steps) == 5:
-                    pentatonic.update({modal_names[i]:shift_scale(steps, n=i)})
+                    pentatonic.append(modal_names[i])
 
-                all.update({modal_names[i]:shift_scale(steps, n=i)})
-
-            modal_by_name.update({name:temp_by_name})
-            modal_by_order.update({name:temp_by_order})
+                all.append(modal_names[i])
 
         # Other part
 
         other_scales = all_scales['other_scales']
 
-        for name, steps in other_scales.items():
-            
+        for name, struct in other_scales.items():
+
+            steps = struct['steps']
+            alias_eng = struct['alias_eng']
+            alias_pl = struct['alias_pl']
 
             if len(steps) == 7:
-                seven_tone.update({name:steps})
+                seven_tone.append(name)
             elif len(steps) == 6:
-                six_tone.update({name:steps})
+                six_tone.append(name)
             elif len(steps) == 5:
-                pentatonic.update({name:steps})
+                pentatonic.append(name)
                 
-            all.update({name:steps})
+            all.append(name)
 
+            detailed.update({name:{"steps":steps
+                                ,"alias_eng":alias_eng
+                                ,"alias_pl":alias_pl}})
 
-        return Scales(modal_by_name, modal_by_order, seven_tone, six_tone, pentatonic, all)
+        return Scales(modals, seven_tone, six_tone, pentatonic, all, detailed)
 

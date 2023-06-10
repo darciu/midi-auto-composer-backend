@@ -46,11 +46,11 @@ def all_scales_names_pentatonic() -> List[str]:
 @router.get("/all_modals_names/", tags=['scales'])
 def all_modals_names() -> List[str]:
     """Get list of all modals names"""
-    return list(scales.modal_by_name.keys())
+    return list(scales.modals.keys())
 
 @router.get("/modal_sub_names/{modal_name}", tags=['scales'])
 def modal_sub_names(modal_name: AllModals) -> List[str]:
     """Get list of all scales names by given modal name"""
-    if scales.modal_by_name.get(modal_name) == None:
+    if scales.modals.get(modal_name) == None:
         raise HTTPException(status_code=404, detail="Invalid modal's name!")
-    return list(scales.modal_by_name.get(modal_name).keys())
+    return list(scales.modals.get(modal_name).keys())
