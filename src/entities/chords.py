@@ -78,7 +78,7 @@ class Chords:
             ,'major_seventh':self.major_seventh}
         filtered_chords = self.all.copy()
         for fltr in filters:
-            filtered_chords = [filtered_chords[x] for x in filtered_chords if x in filters_dict[fltr]]
+            filtered_chords = [name for name in filtered_chords if name in filters_dict[fltr]]
         return filtered_chords
 
     def get_details(self, names:Union[str, list]) -> Dict[str, dict]:

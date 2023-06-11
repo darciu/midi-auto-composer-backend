@@ -8,17 +8,17 @@ chords = Chords.load()
 router = APIRouter()
 
 @router.get("/chord_by_name/{chord_name}", tags=['chords'])
-def chord_by_name(chord_name: str) -> List[int]:
+def chord_by_name(chord_name: str) -> dict:
     """Get chord steps by chord name"""
-    if chords.all.get(chord_name) == None:
+    if chords.detailed.get(chord_name, None) == None:
         raise HTTPException(status_code=404, detail="Invalid chord's name!")
-    return chords.all.get(chord_name)
+    return chords.detailed.get(chord_name)
 
 
-@router.get("/all_chords_names/", tags=['chords'])
-def all_chords_names() -> List[str]:
+@router.get("/all_chords/", tags=['chords'])
+def all_chords() -> dict:
     """Get list of all available chords"""
-    return list(chords.all.keys())
+    return chords.get_details(chords.all)
 
 
 @router.get("/filter_chords/", tags=['chords'])
@@ -36,6 +36,6 @@ def filter_chords(chords_types: list = Query(default=[])) -> List[str]:
         if chord_type not in ['major', 'minor', 'dimished_fifth', 'perfect_fifth', 'augmented_fifth', 'minor_seventh', 'major_seventh']:
             raise HTTPException(status_code=404, detail="Invalid chord's type!")
 
-    return list(chords.filter_chords(chords_types).keys())
+    return chords.filter_chords(chords_types)
 
 

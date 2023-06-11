@@ -47,24 +47,24 @@ def test_random_scales_one_chord_response():
 ## SCALES
 
 def test_scale_by_name(scales):
-    for scale_name in scales.all.keys():
+    for scale_name in scales.detailed.keys():
         scale_name = urllib.parse.quote_plus(scale_name)
         response = client.get(f'v1/scales/scale_by_name/{scale_name}')
         assert response.status_code == 200
-        assert isinstance(response.json(), list)
+        assert isinstance(response.json(), dict)
 
 
 def test_all_scales_names_response():
-    response = client.get('v1/scales/all_scales_names')
+    response = client.get('v1/scales/all_scales')
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json(), dict)
 
 
 def test_all_scales_n_tones():
     for n_tones in ['seven_tone','six_tone','pentatonic']:
-        response = client.get(f'v1/scales/all_scales_names_{n_tones}')
+        response = client.get(f'v1/scales/{n_tones}')
         assert response.status_code == 200
-        assert isinstance(response.json(), list)
+        assert isinstance(response.json(), dict)
         assert len(response.json()) > 0 
 
 
@@ -85,15 +85,15 @@ def test_modal_sub_names():
 ## CHORDS
 
 def test_chord_by_name(chords):
-    for chord_name in chords.all.keys():
+    for chord_name in chords.detailed.keys():
         response = client.get(f'v1/chords/chord_by_name/{chord_name}')
         assert response.status_code == 200
-        assert isinstance(response.json(), list)
+        assert isinstance(response.json(), dict)
 
 def test_all_chords_names_response():
-    response = client.get('v1/chords/all_chords_names')
+    response = client.get('v1/chords/all_chords')
     assert response.status_code == 200
-    assert isinstance(response.json(), list)
+    assert isinstance(response.json(), dict)
 
 
 param_input_filter_chords = combinations(['major', 'minor', 'dimished_fifth', 'perfect_fifth', 'augmented_fifth', 'minor_seventh', 'major_seventh'], 2)
@@ -108,14 +108,14 @@ def test_filter_chords(pairs):
 ## SCALES CHORDS
 
 def test_scales_matching_chord(chords):
-    for chord_name in chords.all.keys():
+    for chord_name in chords.detailed.keys():
         response = client.get(f'v1/scales_chords/scales_matching_chord/{chord_name}')
         assert response.status_code == 200
         assert isinstance(response.json(), list)
 
 
 def test_chords_matching_scale(scales):
-    for scale_name in scales.all.keys():
+    for scale_name in scales.detailed.keys():
         scale_name = urllib.parse.quote_plus(scale_name)
         response = client.get(f'v1/scales_chords/chords_matching_scale/{scale_name}')
         assert response.status_code == 200
