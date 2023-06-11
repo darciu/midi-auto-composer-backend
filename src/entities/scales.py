@@ -5,11 +5,7 @@ from .structures import all_scales
 
 @dataclass
 class Scales:
-    """A class holding scales in dictionaries in form:
-    chord type (str) : list of integer steps
-
-    where steps are following building scale pitches
-    eg. "ionian": [0,2,4,5,7,9,11]
+    """A class holding scales lists and detailed object with little more details about these scales
 
     Attributes
     ----------

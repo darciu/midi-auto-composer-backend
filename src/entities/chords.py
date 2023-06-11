@@ -6,11 +6,7 @@ from .structures import all_chords
 
 @dataclass
 class Chords:
-    """A class holding chords in dictionaries in form:
-    chord type (str) : list of integer steps
-
-    where steps are following building chord pitches
-    eg. "major": [0,4,7]
+    """A class holding chords lists and detailed object with little more details about these chords
 
     Attributes
     -----------
@@ -54,7 +50,7 @@ class Chords:
         minor_seventh = [name for name, struct in all_chords.items() if 10 in struct["steps"]]
         major_seventh = [name for name, struct in all_chords.items() if 11 in struct["steps"]]
 
-        detailed = {name:{"steps":struct["steps"], "alias_eng":struct["alias_eng"]} for name, struct in all_chords.items()}
+        detailed = {name:{"steps":struct["steps"], "alias_eng":struct["alias_eng"], "alias_notation":struct["alias_notation"]} for name, struct in all_chords.items()}
 
         return Chords(all, minor, major, dimished_fifth, perfect_fifth, augmented_fifth, minor_seventh, major_seventh, detailed)
 
