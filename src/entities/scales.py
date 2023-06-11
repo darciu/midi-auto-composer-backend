@@ -61,7 +61,7 @@ class Scales:
             aliases_eng = struct['aliases_eng'].split(',')
             aliases_pl = struct['aliases_pl'].split(',')
 
-            modals.update({name:struct['other_modal_names'].split(',')})
+            modals.update({name:[name] + struct['other_modal_names'].split(',')})
 
             # iterate following scale steps
             for i in range(len(steps)):
@@ -106,4 +106,18 @@ class Scales:
                                 ,"alias_pl":alias_pl}})
 
         return Scales(modals, seven_tone, six_tone, pentatonic, all, detailed)
+    
+    def get_details(self, names:Union[str, list]) -> Dict[str, dict]:
+        """
+        Get details about scales providing chords name(s)
+
+        Parameters
+        ----------
+        names: Union[str, list]
+            List of string names (or single string name)
+        """
+        if isinstance(names, str):
+            names = [names]
+        
+        return {k:v for k,v in self.detailed.items() if k in names}
 

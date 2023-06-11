@@ -26,10 +26,10 @@ print(param_input)
 @pytest.mark.parametrize("modal_name, modal_scales", param_input)
 def test_modal_scales(scales, modal_name, modal_scales):
     for scale in modal_scales.split(','):
-        assert scale in scales.modal_by_name[modal_name].keys()
+        assert scale in scales.modals[modal_name]
 
 
 
 def test_non_existing_scale(scales):
     with pytest.raises(Exception):
-        scales.all['unknown']
+        scales.detailed['unknown']

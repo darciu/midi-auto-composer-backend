@@ -87,7 +87,7 @@ class MIDIComposer:
         
         move_scale_obj = MoveScale(self.move_scale_max, self.difficulty)
         
-        scale_sequence = scales.all.get(scale_name)
+        scale_sequence = scales.detailed.get(scale_name)['steps']
         
         tonal_scale, primes = self.__create_tonal_scale_and_primes_lists(scale_sequence, scale_tonation, self.notes_range)
         
@@ -169,7 +169,7 @@ class MIDIComposer:
             There is always one quarternote pause added between pattern played. 
         """
         
-        scale_sequence = scales.all.get(scale_name)
+        scale_sequence = scales.detailed.get(scale_name)['steps']
         
         tonal_scale, _ = self.__create_tonal_scale_and_primes_lists(scale_sequence, tonation, self.notes_range)
 
@@ -283,7 +283,7 @@ class MIDIComposer:
     def __add_single_chord(self, chord_name, chord_tonation, time):
         
         
-        chord_sequence = chords.all.get(chord_name)
+        chord_sequence = chords.detailed.get(chord_name)['steps']
         
         tonal_chord, _ = self.__create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
         
@@ -373,7 +373,7 @@ class MIDIComposer:
             
     def __add_single_bassline(self, chord_name, chord_tonation, time):
         
-        chord_sequence = chords.all.get(chord_name)
+        chord_sequence = chords.detailed.get(chord_name)['steps']
         
         tonal_chord, _ = self.__create_tonal_scale_and_primes_lists(chord_sequence, chord_tonation, self.notes_range)
         

@@ -42,17 +42,17 @@ class ScalesChords:
     def __chords_scales(self) -> dict:
         full_dict = {}
 
-        for chord_name, chord_steps in self.chords.all.items():
-            chord_steps_set = set(chord_steps)
-            matching_scales = {}
-            for scale_name, scale_steps in self.scales.all.items():
+        for chord_name, chord_struct in self.chords.detailed.items():
+            chord_steps_set = set(chord_struct["steps"])
+            matching_scales = []
+            for scale_name, scale_struct in self.scales.detailed.items():
 
-                scale_steps_set = set(scale_steps)
+                scale_steps_set = set(scale_struct["steps"])
                 if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:
-                    matching_scales.update({scale_name: scale_steps})
+                    matching_scales.append(scale_name)
 
             full_dict.update(
-                {chord_name: {"steps": chord_steps, "matching_scales": matching_scales}})
+                {chord_name: {"steps": chord_struct["steps"], "matching_scales": self.scales.get_details(matching_scales)}})
 
         return full_dict
 
@@ -60,16 +60,16 @@ class ScalesChords:
 
         full_dict = {}
 
-        for scale_name, scale_steps in self.scales.all.items():
-            scale_steps_set = set(scale_steps)
-            matching_chords = {}
-            for chord_name, chord_steps in self.chords.all.items():
+        for scale_name, scale_struct in self.scales.detailed.items():
+            scale_steps_set = set(scale_struct["steps"])
+            matching_chords = []
+            for chord_name, chord_struct in self.chords.detailed.items():
 
-                chord_steps_set = set(chord_steps)
+                chord_steps_set = set(chord_struct["steps"])
                 if chord_steps_set.intersection(scale_steps_set) == chord_steps_set:
-                    matching_chords.update({chord_name: chord_steps})
+                    matching_chords.append(chord_name)
 
             full_dict.update(
-                {scale_name: {"steps": scale_steps, "matching_chords": matching_chords}})
+                {scale_name: {"steps": scale_struct["steps"], "matching_chords": self.chords.get_details(matching_chords)}})
 
         return full_dict
