@@ -22,7 +22,7 @@ def all_chords() -> dict:
 
 
 @router.get("/filter_chords/", tags=['chords'])
-def filter_chords(chords_types: list = Query(default=[])) -> List[str]:
+def filter_chords(chords_types: list = Query(default=[])) -> dict:
     """Selects chords by providing filters list as chords types (strings)
     
     Parameters
@@ -36,6 +36,6 @@ def filter_chords(chords_types: list = Query(default=[])) -> List[str]:
         if chord_type not in ['major', 'minor', 'dimished_fifth', 'perfect_fifth', 'augmented_fifth', 'minor_seventh', 'major_seventh']:
             raise HTTPException(status_code=404, detail="Invalid chord's type!")
 
-    return chords.filter_chords(chords_types)
+    return chords.get_details(chords.filter_chords(chords_types))
 
 

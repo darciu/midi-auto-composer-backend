@@ -49,9 +49,9 @@ def all_modals_names() -> List[str]:
     """Get list of all modals names"""
     return list(scales.modals.keys())
 
-@router.get("/modal_sub_names/{modal_name}", tags=['scales'])
-def modal_sub_names(modal_name: AllModals) -> List[str]:
-    """Get list of all scales names by given modal name"""
+@router.get("/modal_sub_scales/{modal_name}", tags=['scales'])
+def modal_sub_scales(modal_name: AllModals) -> dict:
+    """Get list of all scales by given modal name"""
     if scales.modals.get(modal_name) == None:
         raise HTTPException(status_code=404, detail="Invalid modal's name!")
-    return list(scales.modals.get(modal_name))
+    return scales.get_details(scales.modals.get(modal_name))
