@@ -14,3 +14,8 @@ Documentation will be available under this address:
 ```
 http://localhost:8000/docs#/
 ```
+
+Branches:
+
+- main - commits are being deployed to the appication
+- develop - changes from task branches are merged to this branch
