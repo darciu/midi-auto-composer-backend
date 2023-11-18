@@ -2,7 +2,7 @@
 
 To build the image
 ```
-docker build -t "midi_composer_img" .
+docker build -t darciu/midi_auto_composer .
 ```
 
 For running the container
