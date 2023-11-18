@@ -5,8 +5,6 @@ LABEL maintainer="giemzadariusz@gmail.com"\
 
 
 RUN apt-get update
-RUN apt-get -y install gcc
-RUN apt-get -y install --reinstall build-essential
 RUN apt-get -y install fluidsynth
 RUN apt-get -y install pkg-config
 RUN apt-get -y install libasound2-dev

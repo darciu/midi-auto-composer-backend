@@ -35,12 +35,14 @@ app = FastAPI(title='MIDI Auto Composer'
 
 origins = [
     "http://localhost:3333",
-    "http://127.0.0.1:3333"
+    "http://127.0.0.1:3333",
+    "*"
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
+    allow_origin_regex='https://.*\.a\.run\.app/',
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

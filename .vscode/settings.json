@@ -2,7 +2,7 @@
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": false,
     "python.testing.pytestArgs": [
-        "."
+        "src"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true
