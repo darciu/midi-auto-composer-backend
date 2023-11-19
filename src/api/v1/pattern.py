@@ -39,7 +39,7 @@ def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path[:-3] + 'wav', media_type='application/octet-stream', filename='record.wav')
+    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
 
 
 
