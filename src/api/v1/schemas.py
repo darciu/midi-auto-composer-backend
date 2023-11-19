@@ -4,22 +4,6 @@ from pydantic import BaseModel, Field, validator, root_validator
 
 
 
-def less_than_three_minutes(v: Optional[int]):
-    if not v == None:
-        if v <= 0:
-            raise ValueError('timeout must be greater than zero seconds')
-        elif v > 180:
-            raise ValueError('timeout must be less than 180 seconds')
-        
-def timeout_or_repeat_n_times(cls, values: dict) -> dict:
-    timeout = values.get('timeout')
-    repeat_n_times = values.get('repeat_n_times')
-
-    if (timeout is None) and (repeat_n_times is None):
-        raise ValueError('one of values timeout or repeat_n_times should not be None value')
-    return values
-
-
 class Difficulty(str, Enum):
     easy = "easy"
     normal = "normal"
@@ -75,13 +59,6 @@ class RequestFieldsChordsSequence(BaseModel):
             }
         }
 
-    # validators
-
-    _timeout_or_repeats = root_validator(allow_reuse=True)(timeout_or_repeat_n_times)
-    _timeout_limits = validator('timeout', allow_reuse=True)(less_than_three_minutes)
-    
-
-
 
 class RequestFieldsRandomScalesOneChord(BaseModel):
     tempo: int = tempo_field
@@ -113,13 +90,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
                 "notes_range": (40, 81)
             }
         }
-
-    # validators
-
-    _timeout_or_repeats = root_validator(allow_reuse=True)(timeout_or_repeat_n_times)
-    _timeout_limits = validator('timeout', allow_reuse=True)(less_than_three_minutes)
     
-
 
 class RequestFieldsBackgroundChords(BaseModel):
     tempo: int = tempo_field
@@ -143,11 +114,6 @@ class RequestFieldsBackgroundChords(BaseModel):
                 "notes_range": (40, 81)
             }
         }
-
-    # validators
-
-    _timeout_or_repeats = root_validator(allow_reuse=True)(timeout_or_repeat_n_times)
-    _timeout_limits = validator('timeout', allow_reuse=True)(less_than_three_minutes)
 
 
 class RequestFieldsPattern(BaseModel):
@@ -175,7 +141,7 @@ class RequestFieldsPattern(BaseModel):
 
 
 class RequestFieldsOneScaleOneChord(BaseModel):
-    tempo: int = tempo_field
+    tempo: int = Field(default=100, title='Recording file tempo', ge=30, le=120)
     scale_name: str = Field(default='mixolydian', title='Scale to be played')
     chord_name: str = Field(default='major', title='Background chord')
     tonation: Tonation = Field(default='random', title='Tonation')
@@ -184,9 +150,6 @@ class RequestFieldsOneScaleOneChord(BaseModel):
     difficulty: Difficulty = difficulty_field
     bassline: bool = bassline_field
     percussion: bool = percussion_field
-    scale_preview: bool = preview_field
-    repeat_n_times: Optional[int] = repeat_n_times_field
-    timeout: Optional[int] = timeout_field
     notes_range: tuple = notes_range_field
 
     class Config:
@@ -201,16 +164,10 @@ class RequestFieldsOneScaleOneChord(BaseModel):
                 "difficulty": "normal",
                 "bassline": True,
                 "percussion": True,
-                "scale_preview": True,
-                "repeat_n_times": 40,
                 "notes_range": (40, 81)
             }
         }
 
-    # validators
-
-    _timeout_or_repeats = root_validator(allow_reuse=True)(timeout_or_repeat_n_times)
-    _timeout_limits = validator('timeout', allow_reuse=True)(less_than_three_minutes)
 
 class RequestFieldsMultipleScalesMultipleChords(BaseModel):
     tempo: int = tempo_field
@@ -239,8 +196,3 @@ class RequestFieldsMultipleScalesMultipleChords(BaseModel):
                 "notes_range": (40, 81)
             }
         }
-
-    # validators
-
-    _timeout_or_repeats = root_validator(allow_reuse=True)(timeout_or_repeat_n_times)
-    _timeout_limits = validator('timeout', allow_reuse=True)(less_than_three_minutes)
