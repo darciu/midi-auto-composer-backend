@@ -9,6 +9,7 @@ RUN apt-get -y install fluidsynth
 RUN apt-get -y install pkg-config
 RUN apt-get -y install libasound2-dev
 RUN apt-get -y install libjack-dev
+RUN apt-get -y install ffmpeg
 
 
 

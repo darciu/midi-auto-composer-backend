@@ -41,7 +41,7 @@ class Tonation(str, Enum):
     random = "random"
 
 
-tempo_field = Field(default=120, title='Recording file tempo', ge=20, le=200)
+tempo_field = Field(default=120, title='Recording file tempo', ge=60, le=150)
 quarternotes_field = Field(default= 4, title='How many quarternotes per measure', ge=1, le=8)
 bassline_field = Field(default=True, title='Add bassline to the recording')
 percussion_field = Field(default=True, title='Add percusion beat to the recording')
@@ -151,11 +151,11 @@ class RequestFieldsBackgroundChords(BaseModel):
 
 
 class RequestFieldsPattern(BaseModel):
-    tempo: int = tempo_field
+    tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
     pattern: list = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
     scale_name: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
     tonation: Tonation = Field(default='random', title='Scale tonation')
-    play_upwards: bool = Field(default=True, title='Should pattern be played upwards or downwards')
+    play_upwards: bool = Field(default=True, title='Pattern is played upwards or downwards')
     preview_pattern: bool = preview_field
     pause_between: bool = Field(default=True, title='There is always one quarternote pause added between pattern played')
     notes_range: tuple = notes_range_field
