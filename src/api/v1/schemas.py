@@ -60,60 +60,8 @@ class RequestFieldsChordsSequence(BaseModel):
         }
 
 
-class RequestFieldsRandomScalesOneChord(BaseModel):
-    tempo: int = tempo_field
-    scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
-    chord_name: str = Field(default='major', title='Background chord name')
-    tonation: Tonation = Field(default='random', title='Tonation')
-    quarternotes: int = quarternotes_field
-    move_scale_max: int = move_scale_max_field
-    difficulty: Difficulty = difficulty_field
-    bassline: bool = bassline_field
-    percussion: bool = percussion_field
-    repeat_n_times: Optional[int] = repeat_n_times_field
-    timeout: Optional[int] = timeout_field
-    notes_range: tuple = notes_range_field
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "tempo": 120,
-                "scales": ['pentatonic_minor','pentatonic_major'],
-                "chord_name":"major",
-                "tonation": "random",
-                "quarternotes": 4,
-                "move_scale_max": 2,
-                "difficulty": "normal",
-                "bassline": True,
-                "percussion": True,
-                "repeat_n_times": 40,
-                "notes_range": (40, 81)
-            }
-        }
     
-
-class RequestFieldsBackgroundChords(BaseModel):
-    tempo: int = tempo_field
-    chords: List[Tuple[str, str]] = Field(default=[('major', 'c'), ('dominant7', 'f')], title='Chords to play')
-    quarternotes: int = quarternotes_field
-    bassline: bool = bassline_field
-    percussion: bool = percussion_field
-    repeat_n_times: Optional[int] = repeat_n_times_field
-    timeout: Optional[int] = timeout_field
-    notes_range: tuple = notes_range_field
-
-    class Config:
-        schema_extra = {
-            "example": {
-                "tempo": 120,
-                "chords": [('major', 'c'), ('dominant7', 'f')],
-                "quarternotes": 4,
-                "bassline": True,
-                "percussion": True,
-                "repeat_n_times": 20,
-                "notes_range": (40, 81)
-            }
-        }
 
 
 class RequestFieldsPattern(BaseModel):
@@ -156,7 +104,7 @@ class RequestFieldsOneScaleOneChord(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "tempo": 100,
+                "tempo": 50,
                 "scale_name": 'mixolydian',
                 "chord_name":"major",
                 "tonation": "random",
@@ -169,11 +117,38 @@ class RequestFieldsOneScaleOneChord(BaseModel):
             }
         }
 
+class RequestFieldsRandomScalesOneChord(BaseModel):
+    tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
+    scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
+    chord_name: str = Field(default='major', title='Background chord name')
+    tonation: Tonation = Field(default='random', title='Tonation')
+    quarternotes: int = quarternotes_field
+    move_scale_max: int = move_scale_max_field
+    difficulty: Difficulty = difficulty_field
+    bassline: bool = bassline_field
+    percussion: bool = percussion_field
+    notes_range: tuple = notes_range_field
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "tempo": 50,
+                "scales": ['pentatonic_minor','pentatonic_major'],
+                "chord_name":"major",
+                "tonation": "random",
+                "quarternotes": 4,
+                "move_scale_max": 2,
+                "difficulty": "normal",
+                "bassline": True,
+                "percussion": True,
+                "notes_range": (40, 81)
+            }
+        }
 
 class RequestFieldsCustomCreator(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
     # tonation, quarternotes, scale_name, chord_name
-    components: List[Tuple(str,int,Optional[str],str)] = Field(title = 'Component block representing one measure' )
+    components: List[Tuple[str,int,Optional[str],str]] = Field(title = 'Component block representing one measure' )
     move_scale_max: int = move_scale_max_field
     difficulty: Difficulty = difficulty_field
     repeat_n_times: int = Field(default=2, title='Repeat sequence n times', ge=1, le=5) 
@@ -187,7 +162,7 @@ class RequestFieldsCustomCreator(BaseModel):
         schema_extra = {
             "example": {
                 "tempo": 50,
-                "components": [('a',4,'ionian','major'),('b',4,'aeolian','minor'),('c#',3,None,'minor')],
+                "components": [('a',4,'ionian','major'),('b',4,'aeolian','minor'),('c#',3,None,'minor'),('d#',4,'mixolydian','dominant7')],
                 "move_scale_max": 2,
                 "difficulty": "normal",
                 "repeat_n_times": 2,

@@ -16,30 +16,32 @@ def play_one_scale_one_chord(tempo: int, scale_name: list, chord_name: list, ton
                             quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool,
                             notes_range: tuple) -> str:
 
-    midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
+    midi_composer = MIDIComposer(tempo, notes_range, move_scale_max, difficulty)
 
     tonation = midi_composer.get_tonation(tonation)
 
     # timeout in seconds
     timeout = 60
-    repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
+    repeat_n_times = midi_composer.timeout_to_n_repeats(timeout, quarternotes)
 
+    quarternotes_measures = []
     scales_input = []
     chords_input = []
     for _ in range(repeat_n_times):
         scales_input.append((scale_name,tonation))
         chords_input.append((chord_name,tonation))
+        quarternotes_measures.append(quarternotes)
 
 
-    midi_composer.add_random_melody_part(scales_input,25)
+    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25)
 
-    midi_composer.add_background_chords_part(chords_input, 2)
+    midi_composer.add_background_chords_part(chords_input, quarternotes_measures, 2)
 
     if bassline:
-        midi_composer.add_bassline_part(chords_input, 33)
+        midi_composer.add_bassline_part(chords_input, quarternotes_measures, 33)
 
     if percussion:
-        midi_composer.add_percussion_part(repeat_n_times)
+        midi_composer.add_percussion_part(quarternotes_measures)
     
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'

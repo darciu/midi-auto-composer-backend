@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-
-from api.v1 import chords_sequence
 from api.v1 import multiple_scales_multiple_chords
 from api.v1 import one_scale_one_chord
 from api.v1 import pattern
-from api.v1 import random_background_chords
 from api.v1 import random_scales_one_chord
 
 from api.v1 import get_scales
@@ -53,9 +50,7 @@ app.add_middleware(
 app.include_router(multiple_scales_multiple_chords.router, prefix="/v1")
 app.include_router(one_scale_one_chord.router, prefix="/v1")
 app.include_router(pattern.router, prefix="/v1")
-app.include_router(random_background_chords.router, prefix="/v1")
 app.include_router(random_scales_one_chord.router, prefix="/v1")
-app.include_router(chords_sequence.router, prefix="/v1")
 
 app.include_router(get_scales.router, prefix="/v1/scales")
 app.include_router(get_chords.router, prefix="/v1/chords")
