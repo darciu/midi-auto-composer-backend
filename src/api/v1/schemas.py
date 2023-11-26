@@ -170,30 +170,29 @@ class RequestFieldsOneScaleOneChord(BaseModel):
         }
 
 
-class RequestFieldsMultipleScalesMultipleChords(BaseModel):
-    tempo: int = tempo_field
-    scales = Field(default=[('ionian','d'),('dorian','e')], title='List of tuples: scale - tonation to be played')
-    chords = Field(default=[('major','d'),('minor','e')], title='List of tuples: chord - tonation to be played')
-    quarternotes: int = quarternotes_field
+class RequestFieldsCustomCreator(BaseModel):
+    tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
+    # tonation, quarternotes, scale_name, chord_name
+    components: List[Tuple(str,int,Optional[str],str)] = Field(title = 'Component block representing one measure' )
     move_scale_max: int = move_scale_max_field
     difficulty: Difficulty = difficulty_field
+    repeat_n_times: int = Field(default=2, title='Repeat sequence n times', ge=1, le=5) 
     bassline: bool = bassline_field
     percussion: bool = percussion_field
-    repeat_n_times: Optional[int] = repeat_n_times_field
-    timeout: Optional[int] = timeout_field
     notes_range: tuple = notes_range_field
+
+
 
     class Config:
         schema_extra = {
             "example": {
-                "tempo": 120,
-                "scales": [('ionian','d'),('dorian','e')],
-                "chords": [('major','d'),('minor','e')],
+                "tempo": 50,
+                "components": [('a',4,'ionian','major'),('b',4,'aeolian','minor'),('c#',3,None,'minor')],
                 "move_scale_max": 2,
                 "difficulty": "normal",
+                "repeat_n_times": 2,
                 "bassline": True,
                 "percussion": True,
-                "repeat_n_times": 20,
                 "notes_range": (40, 81)
             }
         }

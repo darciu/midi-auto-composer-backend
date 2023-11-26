@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from starlette.background import BackgroundTasks
 
 from . import remove_file, convert_midi_file
-from .schemas import RequestFieldsMultipleScalesMultipleChords
+from .schemas import RequestFieldsCustomCreator
 from entities.midi_composer import MIDIComposer
 
 router = APIRouter()
@@ -50,12 +50,18 @@ def play_multiple_scales_multiple_chords(tempo: int, quarternotes: int,  scales:
     return output_file_path
 
 
-@router.post("/multiple_scales_multiple_chords", tags=['play_modes'])
-def multiple_scales_multiple_chords(fields: RequestFieldsMultipleScalesMultipleChords, background_tasks: BackgroundTasks):
+@router.post("/custom_creator", tags=['play_modes'])
+def multiple_scales_multiple_chords(fields: RequestFieldsCustomCreator, background_tasks: BackgroundTasks):
     """Providing measures play different scales with different chords in loop"""
 
 
-    output_file_path = play_multiple_scales_multiple_chords(fields.tempo, fields.quarternotes, fields.scales, fields.chords, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion, fields.repeat_n_times, fields.timeout, fields.notes_range)
+
+
+    output_file_path = play_multiple_scales_multiple_chords(fields.tempo, fields.quarternotes, 
+                                                            fields.scales, fields.chords, 
+                                                            fields.move_scale_max, fields.difficulty, 
+                                                            fields.bassline, fields.percussion, 
+                                                            fields.repeat_n_times, fields.timeout, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 
