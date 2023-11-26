@@ -1,6 +1,6 @@
 from typing import List, Tuple, Optional
 from enum import Enum
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, validator, root_validator, conlist
 
 
 
@@ -118,7 +118,7 @@ class RequestFieldsBackgroundChords(BaseModel):
 
 class RequestFieldsPattern(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
-    pattern: list = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
+    pattern: conlist(int, min_items=1, max_items=5) = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
     scale_name: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
     tonation: Tonation = Field(default='random', title='Scale tonation')
     play_upwards: bool = Field(default=True, title='Pattern is played upwards or downwards')
@@ -130,18 +130,19 @@ class RequestFieldsPattern(BaseModel):
         schema_extra = {
             "example": {
                 "tempo": 120,
+                "pattern":[1,2,3],
                 "scale_name": 'mixolydian',
                 "tonation": "random",
                 "play_upwards": True,
                 "preview_pattern": True,
                 "pause_between": True,
-                "notes_range": (40, 81)
+                "notes_range": (40, 70)
             }
         }
 
 
 class RequestFieldsOneScaleOneChord(BaseModel):
-    tempo: int = Field(default=100, title='Recording file tempo', ge=30, le=120)
+    tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
     scale_name: str = Field(default='mixolydian', title='Scale to be played')
     chord_name: str = Field(default='major', title='Background chord')
     tonation: Tonation = Field(default='random', title='Tonation')
@@ -155,7 +156,7 @@ class RequestFieldsOneScaleOneChord(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "tempo": 120,
+                "tempo": 100,
                 "scale_name": 'mixolydian',
                 "chord_name":"major",
                 "tonation": "random",

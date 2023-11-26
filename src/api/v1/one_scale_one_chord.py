@@ -31,7 +31,7 @@ def play_one_scale_one_chord(tempo: int, scale_name: list, chord_name: list, ton
         chords_input.append((chord_name,tonation))
 
 
-    midi_composer.add_random_melody_part(scales_input,42)
+    midi_composer.add_random_melody_part(scales_input,25)
 
     midi_composer.add_background_chords_part(chords_input, 2)
 
