@@ -13,15 +13,16 @@ router = APIRouter()
 
 
 def play_one_scale_one_chord(tempo: int, scale_name: list, chord_name: list, tonation: str,
-                            quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, scale_preview: bool, repeat_n_times: int,
-                            timeout: Optional[int], notes_range: tuple) -> str:
+                            quarternotes: int, move_scale_max: int, difficulty: str, bassline: bool, percussion: bool,
+                            notes_range: tuple) -> str:
 
     midi_composer = MIDIComposer(tempo, quarternotes, notes_range, move_scale_max, difficulty)
 
     tonation = midi_composer.get_tonation(tonation)
 
-    if timeout:
-        repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
+    # timeout in seconds
+    timeout = 60
+    repeat_n_times = midi_composer.timeout_to_n_repeats(timeout)
 
     scales_input = []
     chords_input = []
@@ -29,10 +30,8 @@ def play_one_scale_one_chord(tempo: int, scale_name: list, chord_name: list, ton
         scales_input.append((scale_name,tonation))
         chords_input.append((chord_name,tonation))
 
-    # if play_scale_preview:
-    #     midi_composer.add_scale_pattern_part(pattern, scale_name, tonation, play_upwards, preview_pattern, pause_between)
 
-    midi_composer.add_random_melody_part(scales_input,42)
+    midi_composer.add_random_melody_part(scales_input,25)
 
     midi_composer.add_background_chords_part(chords_input, 2)
 
@@ -58,11 +57,11 @@ def one_scale_one_chord(fields: RequestFieldsOneScaleOneChord, background_tasks:
     
 
     output_file_path = play_one_scale_one_chord(fields.tempo, fields.scale_name, fields.chord_name, fields.tonation,
-                            fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion, fields.scale_preview, fields.repeat_n_times,
-                            fields.timeout, fields.notes_range)
+                            fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline, fields.percussion,
+                            fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.wav')
+    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
