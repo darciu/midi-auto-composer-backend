@@ -14,7 +14,7 @@ def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, p
 
     
 
-    midi_composer = MIDIComposer(tempo, 1, notes_range)
+    midi_composer = MIDIComposer(tempo, notes_range)
 
     tonation = midi_composer.get_tonation(tonation)
 

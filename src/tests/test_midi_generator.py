@@ -3,14 +3,14 @@ from entities.midi_composer import MIDIComposer
 
 @pytest.fixture
 def midi_obj():
-    return MIDIComposer(120,4,(40,80))
+    return MIDIComposer(80,(40,80))
 
 
 def test_add_random_melody_part(midi_obj):
 
     scales_input = [('ionian','c')]
 
-    midi_obj.add_random_melody_part(scales_input,42)
+    midi_obj.add_random_melody_part(scales_input,[4],42)
 
     
 def test_add_scale_pattern_part(midi_obj):
@@ -37,18 +37,18 @@ def test_add_background_chords_part(midi_obj):
 
     chords_input = [('major','c')]
 
-    midi_obj.add_background_chords_part(chords_input, 12)
+    midi_obj.add_background_chords_part(chords_input,[4], 12)
 
 def test_add_bassline_part(midi_obj):
 
     chords_input = [('major','c')]
 
-    midi_obj.add_bassline_part(chords_input, 12)
+    midi_obj.add_bassline_part(chords_input,[4], 12)
 
 
 def test_add_percussion_part(midi_obj):
 
-    midi_obj.add_percussion_part(4)
+    midi_obj.add_percussion_part([4])
 
 
 def test_get_tonation(midi_obj):
@@ -59,9 +59,9 @@ def test_get_tonation(midi_obj):
 
 def test_timeout_to_n_repeats(midi_obj):
 
-    assert midi_obj.timeout_to_n_repeats(10) == 5
-    assert midi_obj.timeout_to_n_repeats(60) == 30
-    assert midi_obj.timeout_to_n_repeats(90) == 45
+    assert midi_obj.timeout_to_n_repeats(10,4) == 3
+    assert midi_obj.timeout_to_n_repeats(60,4) == 20
+    assert midi_obj.timeout_to_n_repeats(90,4) == 30
 
 def test_close_midi(midi_obj):
     midi_obj.close_midi()
