@@ -417,12 +417,70 @@ class MIDIComposer:
         """
         # track = 0
         # channel = 9
+
+        # 35 - kick
+        # 38 - snare
+        # 42 - closed hi hat
+        # 46 - open hi hat
         
         time = self.time_pointer
         
         for quarternotes in quarternotes_measures:
 
-            if quarternotes == 4:
+            if quarternotes == 2:
+                pass
+
+            elif quarternotes == 3:
+
+                chance = random.randrange(0,9)
+
+                if chance in [0,1,2]:
+                    # open hihat na końcu- średnio
+                    self.MIDIobj.addNote(0,9,35,time, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+
+
+                elif chance in [3,4,5]:
+                    # tradycyjnie - normalnie
+                    self.MIDIobj.addNote(0,9,35,time, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                    self.MIDIobj.addNote(0,9,42,time+2, 1,55)
+                    if random.choice([0,1,2,3,4]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2.5, 1,40)
+                    else:
+                        self.MIDIobj.addNote(0,9,35,time+2.5, 1,45)
+
+                elif chance in [6]:
+                    # stopa w środku
+                    self.MIDIobj.addNote(0,9,35,time, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                    self.MIDIobj.addNote(0,9,35,time+1.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+                
+
+                elif chance in [7,8]:
+                    # swing
+                    self.MIDIobj.addNote(0,9,35,time, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                    self.MIDIobj.addNote(0,9,42,time+1.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+
+                time +=3
+
+
+
+
+            elif quarternotes == 4:
                 self.MIDIobj.addNote(0,9,35,time, 1,65)
                 self.MIDIobj.addNote(0,9,40,time+2, 1,60)
                 
@@ -430,10 +488,13 @@ class MIDIComposer:
                 self.MIDIobj.addNote(0,9,42,time+2, 1,55)
                 self.MIDIobj.addNote(0,9,42,time+3, 1,65)
                 time += 4
-            if quarternotes == 3:
-                self.MIDIobj.addNote(0,9,35,time, 1,65)
 
-                self.MIDIobj.addNote(0,9,42,time+1, 1,65)
-                self.MIDIobj.addNote(0,9,42,time+2, 1,55)
 
-                time +=3
+            elif quarternotes == 5:
+                pass
+
+            elif quarternotes == 6:
+                pass
+
+            elif quarternotes == 7:
+                pass
