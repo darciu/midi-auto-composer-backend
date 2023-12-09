@@ -426,6 +426,9 @@ class MIDIComposer:
         # 38 - snare
         # 42 - closed hi hat
         # 46 - open hi hat
+
+        def get_volume(possible_volumes: list) -> int:
+            return int(random.choice(possible_volumes)*127)
         
         time = self.time_pointer
         
@@ -441,10 +444,10 @@ class MIDIComposer:
                     self.MIDIobj.addNote(0,9,35,time, 1,65)
                     self.MIDIobj.addNote(0,9,42,time+1, 1,int(hh_volume*127))
 
-                    chance = random.choice([0,1,2,3,4])
-                    if  chance == 0:
+                    chance_inner = random.choice([0,1,2,3,4])
+                    if  chance_inner == 0:
                         self.MIDIobj.addNote(0,9,random.choice([42,46]),time+1.5, 1,30)
-                    elif chance in [1,2]:
+                    elif chance_inner in [1,2]:
                         self.MIDIobj.addNote(0,9,35,time+1.5, 1,45)
                     else:
                         pass
@@ -466,7 +469,7 @@ class MIDIComposer:
 
             elif quarternotes == 3:
 
-                chance = random.randrange(0,9)
+                chance = random.randrange(0,7)
 
                 if chance in [0,1,2]:
                     # open hihat na końcu- średnio
@@ -499,28 +502,21 @@ class MIDIComposer:
                         self.MIDIobj.addNote(0,9,42,time+2, 1,45)
                 
 
-                elif chance in [7,8]:
-                    # swing
-                    self.MIDIobj.addNote(0,9,35,time, 1,65)
-                    self.MIDIobj.addNote(0,9,42,time+1, 1,55)
-                    self.MIDIobj.addNote(0,9,42,time+1.66, 1,55)
-                    if random.choice([0,1,2,3]) == 0:
-                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
-                    else:
-                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
-
                 time +=3
 
 
 
 
             elif quarternotes == 4:
-                self.MIDIobj.addNote(0,9,35,time, 1,65)
-                self.MIDIobj.addNote(0,9,40,time+2, 1,60)
-                
-                self.MIDIobj.addNote(0,9,42,time+1, 1,65)
-                self.MIDIobj.addNote(0,9,42,time+2, 1,55)
-                self.MIDIobj.addNote(0,9,42,time+3, 1,65)
+
+                self.MIDIobj.addNote(0,9,35,time, 1,get_volume([0.55,0.65]))
+                self.MIDIobj.addNote(0,9,42,time+1, 1,get_volume([0.5,0.55]))
+                self.MIDIobj.addNote(0,9,35,time+2, 1,get_volume([0.4,0.45]))
+                if random.choice([0,1,2,3,4]) == 0:
+                    self.MIDIobj.addNote(0,9,35,time+2.5, 1,get_volume([0.45,0.5]))
+
+                self.MIDIobj.addNote(0,9,random.choice([42,42,42,46]),time+3, 1,get_volume([0.45,0.5,0.55]))
+
                 time += 4
 
 
