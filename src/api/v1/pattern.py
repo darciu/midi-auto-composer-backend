@@ -14,7 +14,7 @@ def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, p
 
     
 
-    midi_composer = MIDIComposer(tempo, 1, notes_range)
+    midi_composer = MIDIComposer(tempo, notes_range)
 
     tonation = midi_composer.get_tonation(tonation)
 
@@ -39,7 +39,7 @@ def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path[:-3] + 'wav', media_type='application/octet-stream', filename='record.wav')
+    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
 
 
 
