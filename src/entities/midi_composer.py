@@ -374,14 +374,16 @@ class MIDIComposer:
         
         chord_sequence = [tone for tone in tonal_chord if tone <= tonal_chord[0]+12 and tone > tonal_chord[0]]
         
-        rhythm = self.__get_rhythm(quarternotes, [1,2,4], [1,3,6])
+        rhythm = self.__get_rhythm(quarternotes, [1,2], [1,3])
                 
         
         # first quarternote
         
-        note = random.choices([chord_sequence[0],chord_sequence[2],chord_sequence[0]+12], k=1, weights=[5,2,1])[0]
+        note = random.choices([chord_sequence[0],chord_sequence[2]], k=1, weights=[5,2])[0]
+
+        volume = random.choice([0.65,0.75,0.8])
         
-        self.MIDIobj.addNote(0, 2, note-12, time, rhythm[0], int(0.5*127))
+        self.MIDIobj.addNote(0, 2, note-12, time, rhythm[0], int(volume*127))
         
         time += rhythm[0]
                 
@@ -390,7 +392,9 @@ class MIDIComposer:
             
             note = random.choice(chord_sequence[1:])
 
-            self.MIDIobj.addNote(0, 2, note-12, time, 4, int(0.45*127))
+            volume = random.choice([0.55,0.65,0.7])
+
+            self.MIDIobj.addNote(0, 2, note-12, time, rhythm_value, int(volume*127))
             
             time += rhythm_value
     
@@ -417,23 +421,191 @@ class MIDIComposer:
         """
         # track = 0
         # channel = 9
+
+        # 35 - kick
+        # 38 - snare
+        # 42 - closed hi hat
+        # 46 - open hi hat
+
+        def get_volume(possible_volumes: list) -> int:
+            return int(random.choice(possible_volumes)*127)
         
         time = self.time_pointer
         
         for quarternotes in quarternotes_measures:
 
-            if quarternotes == 4:
-                self.MIDIobj.addNote(0,9,35,time, 1,65)
-                self.MIDIobj.addNote(0,9,40,time+2, 1,60)
-                
-                self.MIDIobj.addNote(0,9,42,time+1, 1,65)
-                self.MIDIobj.addNote(0,9,42,time+2, 1,55)
-                self.MIDIobj.addNote(0,9,42,time+3, 1,65)
-                time += 4
-            if quarternotes == 3:
-                self.MIDIobj.addNote(0,9,35,time, 1,65)
+            if quarternotes == 2:
+                chance = random.randrange(0,6)
 
-                self.MIDIobj.addNote(0,9,42,time+1, 1,65)
-                self.MIDIobj.addNote(0,9,42,time+2, 1,55)
+                if chance in [0,1,2,3,4]:
+
+                    hh_volume = random.choice([0.4,0.5])
+
+                    self.MIDIobj.addNote(0,9,35,time, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,int(hh_volume*127))
+
+                    chance_inner = random.choice([0,1,2,3,4])
+                    if  chance_inner == 0:
+                        self.MIDIobj.addNote(0,9,random.choice([42,46]),time+1.5, 1,30)
+                    elif chance_inner in [1,2]:
+                        self.MIDIobj.addNote(0,9,35,time+1.5, 1,45)
+                    else:
+                        pass
+
+                elif chance in [5]:
+                    #double kick
+
+                    hh_volume = random.choice([0.35,0.4,0.5])
+
+                    self.MIDIobj.addNote(0,9,35,time, 1,40)
+                    self.MIDIobj.addNote(0,9,35,time+0.5, 1,65)
+                    self.MIDIobj.addNote(0,9,42,time+1, 1,int(hh_volume*127))
+
+                    self.MIDIobj.addNote(0,9,random.choice([42,42,46]),time+1.5, 1,int(random.choice([0,0.4,0.45])*127))
+
+
+                time += 2
+
+
+            elif quarternotes == 3:
+
+                
+                self.MIDIobj.addNote(0,9,35,time, 1,65)
+                self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                chance = random.randrange(0,7)
+                
+                if chance in [0,1,2]:         
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+                elif chance in [3,4,5]:
+                    self.MIDIobj.addNote(0,9,42,time+2, 1,55)
+                    if random.choice([0,1,2,3,4]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2.5, 1,40)
+                    else:
+                        self.MIDIobj.addNote(0,9,35,time+2.5, 1,45)
+                elif chance in [6]:
+                    self.MIDIobj.addNote(0,9,35,time+1.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+                
 
                 time +=3
+
+
+
+
+            elif quarternotes == 4:
+
+                self.MIDIobj.addNote(0,9,35,time, 1,get_volume([0.6,0.7]))
+                self.MIDIobj.addNote(0,9,42,time+1, 1,get_volume([0.45,0.5]))
+                self.MIDIobj.addNote(0,9,35,time+2, 1,get_volume([0.5,0.55]))
+                if random.choice([0,1,2,3,4]) == 0:
+                    self.MIDIobj.addNote(0,9,35,time+2.5, 1,get_volume([0.45,0.5]))
+
+                self.MIDIobj.addNote(0,9,random.choice([42,42,42,46]),time+3, 1,get_volume([0.4,0.45,0.5]))
+
+                time += 4
+
+
+            elif quarternotes == 5:
+                self.MIDIobj.addNote(0,9,35,time, 1,get_volume([0.6,0.7]))
+                self.MIDIobj.addNote(0,9,42,time+1, 1,get_volume([0.45,0.5]))
+                self.MIDIobj.addNote(0,9,35,time+2, 1,get_volume([0.5,0.55]))
+                if random.choice([0,1,2,3,4]) == 0:
+                    self.MIDIobj.addNote(0,9,35,time+2.5, 1,get_volume([0.45,0.5]))
+
+                self.MIDIobj.addNote(0,9,42,time+5, 1,get_volume([0,0,0.4,0.45,]))
+
+                self.MIDIobj.addNote(0,9,random.choice([42,42,42,46]),time+4, 1,get_volume([0.4,0.45,0.5]))
+
+                time += 5
+
+            elif quarternotes == 6:
+
+
+                self.MIDIobj.addNote(0,9,35,time, 1,65)
+                self.MIDIobj.addNote(0,9,42,time+1, 1,55)
+                chance = random.randrange(0,7)
+                
+                if chance in [0,1,2]:         
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+                elif chance in [3,4,5]:
+                    self.MIDIobj.addNote(0,9,42,time+2, 1,55)
+                    if random.choice([0,1,2,3,4]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2.5, 1,40)
+                    else:
+                        self.MIDIobj.addNote(0,9,35,time+2.5, 1,45)
+                elif chance in [6]:
+                    self.MIDIobj.addNote(0,9,35,time+1.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+2, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+2, 1,45)
+
+                self.MIDIobj.addNote(0,9,35,time+3, 1,65)
+                self.MIDIobj.addNote(0,9,42,time+4, 1,55)
+
+
+                chance = random.randrange(0,7)
+                
+                if chance in [0,1,2]:         
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+5, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+5, 1,45)
+                elif chance in [3,4,5]:
+                    self.MIDIobj.addNote(0,9,42,time+5, 1,55)
+                    if random.choice([0,1,2,3,4]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+5.5, 1,40)
+                    else:
+                        self.MIDIobj.addNote(0,9,35,time+5.5, 1,45)
+                elif chance in [6]:
+                    self.MIDIobj.addNote(0,9,35,time+4.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+5, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+5, 1,45)
+
+                time += 6
+
+            elif quarternotes == 7:
+                
+                self.MIDIobj.addNote(0,9,35,time, 1,get_volume([0.6,0.7]))
+                self.MIDIobj.addNote(0,9,42,time+1, 1,get_volume([0.45,0.5]))
+                self.MIDIobj.addNote(0,9,35,time+2, 1,get_volume([0.5,0.55]))
+                if random.choice([0,1,2,3,4]) == 0:
+                    self.MIDIobj.addNote(0,9,35,time+2.5, 1,get_volume([0.45,0.5]))
+
+                self.MIDIobj.addNote(0,9,random.choice([42,42,42,46]),time+3, 1,get_volume([0.4,0.45,0.5]))
+
+                self.MIDIobj.addNote(0,9,35,time+4, 1,65)
+                self.MIDIobj.addNote(0,9,42,time+5, 1,55)
+                chance = random.randrange(0,7)
+                
+                if chance in [0,1,2]:         
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+6, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+6, 1,45)
+                elif chance in [3,4,5]:
+                    self.MIDIobj.addNote(0,9,42,time+6, 1,55)
+                    if random.choice([0,1,2,3,4]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+6.5, 1,40)
+                    else:
+                        self.MIDIobj.addNote(0,9,35,time+6.5, 1,45)
+                elif chance in [6]:
+                    self.MIDIobj.addNote(0,9,35,time+5.66, 1,55)
+                    if random.choice([0,1,2,3]) == 0:
+                        self.MIDIobj.addNote(0,9,46,time+6, 1,45)
+                    else:
+                        self.MIDIobj.addNote(0,9,42,time+6, 1,45)
+                
+
+                time +=7

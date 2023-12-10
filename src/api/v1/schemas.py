@@ -161,11 +161,11 @@ class RequestFieldsCustomCreator(BaseModel):
     class Config:
         schema_extra = {
             "example": {
-                "tempo": 50,
-                "components": [('a',4,'ionian','major'),('b',4,'aeolian','minor'),('c#',3,None,'minor'),('d#',4,'mixolydian','dominant7')],
+                "tempo": 70,
+                "components": [('a',3,None,'major'),('b',3,None,'minor'),('c#',3,None,'minor'),('d#',3,None,'dominant7')],
                 "move_scale_max": 2,
                 "difficulty": "normal",
-                "repeat_n_times": 2,
+                "repeat_n_times": 5,
                 "bassline": True,
                 "percussion": True,
                 "notes_range": (40, 81)
