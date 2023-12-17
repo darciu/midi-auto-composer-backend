@@ -8,3 +8,4 @@ repos:
         entry: python -m pre-commit-script
         language: python
         pass_filenames: false
+        always_run: true
