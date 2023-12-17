@@ -1,0 +1,77 @@
+[
+    {
+        "subchords": [
+            "major",
+            "dominant7",
+            "maj7",
+            "dominant7_plus5",
+            "dominant7_b5",
+            "maj7_b5",
+            "augmented",
+            "maj7_plus5"
+        ],
+        "value": "major"
+    },
+    {
+        "subchords": [
+            "minor",
+            "m7",
+            "m7b5",
+            "m7_plus5",
+            "m_maj7",
+            "dimished"
+        ],
+        "value": "minor"
+    },
+    {
+        "subchords": [
+            "major",
+            "minor",
+            "dominant7",
+            "m7",
+            "maj7",
+            "sus2",
+            "sus4",
+            "m_maj7"
+        ],
+        "value": "perfect_fifth"
+    },
+    {
+        "subchords": [
+            "m7b5",
+            "dominant7_b5",
+            "maj7_b5",
+            "dimished"
+        ],
+        "value": "dimished_fifth"
+    },
+    {
+        "subchords": [
+            "dominant7_plus5",
+            "m7_plus5",
+            "augmented",
+            "maj7_plus5"
+        ],
+        "value": "augmented_fifth"
+    },
+    {
+        "subchords": [
+            "dominant7",
+            "m7",
+            "m7b5",
+            "dominant7_plus5",
+            "dominant7_b5",
+            "m7_plus5"
+        ],
+        "value": "minor_seventh"
+    },
+    {
+        "subchords": [
+            "maj7",
+            "maj7_b5",
+            "m_maj7",
+            "maj7_plus5"
+        ],
+        "value": "major_seventh"
+    }
+]
