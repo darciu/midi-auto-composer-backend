@@ -1,6 +1,6 @@
 import json
 import sys
-sys.path.append("..")
+sys.path.append(".")
 
 from src.entities.scales import Scales
 from src.entities.chords import Chords
@@ -23,8 +23,7 @@ for elem in scales.all:
             ,"value":value})
    
 
-with open("output/scales_detailed.json", "w") as f: 
-    json.dump(scales_detailed, f)
+
 
 scales_tree = []
 modals = scales.modals
@@ -39,8 +38,7 @@ for elem in modals.keys():
 scales_tree.append({"subscales":scales.six_tone
                 ,"value":"six tone"})
 
-with open("output/scales_tree.json", "w") as f: 
-    json.dump(scales_tree, f)
+
 
 
 chords_detailed = []
@@ -58,8 +56,7 @@ for elem in chords.all:
             ,"value":value})
    
 
-with open("output/chords_detailed.json", "w") as f: 
-    json.dump(chords_detailed, f)
+
 
 
 chords_tree = []
@@ -85,5 +82,16 @@ chords_tree.append({"subchords":chords.minor_seventh
 chords_tree.append({"subchords":chords.major_seventh
                     ,"value":"major_seventh"})
 
-with open("output/chords_tree.json", "w") as f: 
+
+
+with open("pre-commit-output/scales_detailed.json", "w") as f: 
+    json.dump(scales_detailed, f)
+
+with open("pre-commit-output/scales_tree.json", "w") as f: 
+    json.dump(scales_tree, f)
+
+with open("pre-commit-output/chords_detailed.json", "w") as f: 
+    json.dump(chords_detailed, f)
+
+with open("pre-commit-output/chords_tree.json", "w") as f: 
     json.dump(chords_tree, f)
