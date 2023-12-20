@@ -1,8 +1,8 @@
 import random
+import numpy as np
 from typing import Tuple, List, Optional
 
 from midiutil import MIDIFile
-
 
 from entities.chords import Chords
 from entities.scales import Scales
@@ -153,16 +153,26 @@ class MIDIComposer:
         
         time = self.time_pointer
         self.MIDIobj.addProgramChange(0, 0, 0, program)
+        
         volume = 0.8
+
+        self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
 
         low_range = self.notes_range[0]
         high_range = self.notes_range[1]
-        
-        self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+
+        if self.difficulty == 'easy':
+            weights = [1/elem for elem in range(1,len(intervals)+1)]
+        elif self.difficulty == 'normal':
+            weights = list(np.ones(len(intervals),dtype=int))
+        elif self.difficulty == 'hard':
+            weights = list(range(1,len(intervals)+1))
+
+        intervals = sorted(intervals, key=lambda d: self.intervals_map[d])
 
         for time in range(1, repeat_n_times+1):
             
-            interval = self.intervals_map.get(random.choice(intervals))
+            interval = self.intervals_map.get(random.choices(intervals,k=1,weights=weights)[0])
             add_operator = random.choice([False,True])
 
             if add_operator:
