@@ -50,6 +50,12 @@ def test_add_percussion_part(midi_obj):
 
     midi_obj.add_percussion_part([4])
 
+def test_add_intervals_melody_part_wrong_interval(midi_obj):
+    with pytest.raises(Exception):
+        midi_obj.add_intervals_melody_part(['T','m3'],1)
+
+def test_add_intervals_melody_part(midi_obj):
+    midi_obj.add_intervals_melody_part(['TT','m3'], 1)
 
 def test_get_tonation(midi_obj):
 

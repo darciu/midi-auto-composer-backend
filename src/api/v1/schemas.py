@@ -1,6 +1,6 @@
 from typing import List, Tuple, Optional
 from enum import Enum
-from pydantic import BaseModel, Field, validator, root_validator, conlist
+from pydantic import BaseModel, Field, conlist, validator
 
 
 
@@ -23,6 +23,7 @@ class Tonation(str, Enum):
     a_sharp = "a#"
     b = "b"
     random = "random"
+
 
 
 tempo_field = Field(default=120, title='Recording file tempo', ge=60, le=150)
@@ -89,35 +90,8 @@ class RequestFieldsPattern(BaseModel):
         }
 
 
-class RequestFieldsOneScaleOneChord(BaseModel):
-    tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
-    scale_name: str = Field(default='mixolydian', title='Scale to be played')
-    chord_name: str = Field(default='major', title='Background chord')
-    tonation: Tonation = Field(default='random', title='Tonation')
-    quarternotes: int = quarternotes_field
-    move_scale_max: int = move_scale_max_field
-    difficulty: Difficulty = difficulty_field
-    bassline: bool = bassline_field
-    percussion: bool = percussion_field
-    notes_range: tuple = notes_range_field
 
-    class Config:
-        schema_extra = {
-            "example": {
-                "tempo": 50,
-                "scale_name": 'mixolydian',
-                "chord_name":"major",
-                "tonation": "random",
-                "quarternotes": 4,
-                "move_scale_max": 2,
-                "difficulty": "normal",
-                "bassline": True,
-                "percussion": True,
-                "notes_range": (40, 81)
-            }
-        }
-
-class RequestFieldsRandomScalesOneChord(BaseModel):
+class RequestFieldsScalesOneChord(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
     scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
     chord_name: str = Field(default='major', title='Background chord name')
@@ -127,6 +101,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
     difficulty: Difficulty = difficulty_field
     bassline: bool = bassline_field
     percussion: bool = percussion_field
+    random_sequence: bool = Field(default=True, title='Play scales randomly or sequentially')
     notes_range: tuple = notes_range_field
 
     class Config:
@@ -141,9 +116,11 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
                 "difficulty": "normal",
                 "bassline": True,
                 "percussion": True,
+                "random_sequence": True,
                 "notes_range": (40, 81)
             }
         }
+
 
 class RequestFieldsCustomCreator(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
@@ -156,8 +133,6 @@ class RequestFieldsCustomCreator(BaseModel):
     percussion: bool = percussion_field
     notes_range: tuple = notes_range_field
 
-
-
     class Config:
         schema_extra = {
             "example": {
@@ -168,6 +143,31 @@ class RequestFieldsCustomCreator(BaseModel):
                 "repeat_n_times": 5,
                 "bassline": True,
                 "percussion": True,
+                "notes_range": (40, 81)
+            }
+        }
+
+
+class RequestFieldsIntervals(BaseModel):
+    tempo: int = Field(default=30, title='Recording file tempo', ge=20, le=80)
+    intervals: List[str] = Field(default=['m2','M2','TT'], title='Repeat sequence n times',) 
+    difficulty: Difficulty = difficulty_field
+    notes_range: tuple = notes_range_field
+
+    @validator('intervals')
+    def must_be_in_intervals(cls,intervals):
+      valid_intervals=['m2','M2','m3','M3','P4','TT','P5','m6','M6','m7','M7','P8']
+      for interval in intervals:
+        if interval not in valid_intervals:    
+            raise ValueError(f'Value {interval} must be in {valid_intervals}')
+      return intervals
+    
+    class Config:
+        schema_extra = {
+            "example": {
+                "tempo": 30,
+                "intervals": ['m2','M2','TT'],
+                "difficulty": "normal",
                 "notes_range": (40, 81)
             }
         }
