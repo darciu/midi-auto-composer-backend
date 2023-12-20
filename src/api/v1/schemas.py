@@ -117,7 +117,7 @@ class RequestFieldsOneScaleOneChord(BaseModel):
             }
         }
 
-class RequestFieldsRandomScalesOneChord(BaseModel):
+class RequestFieldsScalesOneChord(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
     scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
     chord_name: str = Field(default='major', title='Background chord name')
@@ -127,6 +127,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
     difficulty: Difficulty = difficulty_field
     bassline: bool = bassline_field
     percussion: bool = percussion_field
+    random_sequence: bool = Field(default=True, title='Play scales randomly or sequentially')
     notes_range: tuple = notes_range_field
 
     class Config:
@@ -141,6 +142,7 @@ class RequestFieldsRandomScalesOneChord(BaseModel):
                 "difficulty": "normal",
                 "bassline": True,
                 "percussion": True,
+                "random_sequence": True,
                 "notes_range": (40, 81)
             }
         }
