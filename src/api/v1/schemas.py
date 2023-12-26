@@ -61,12 +61,6 @@ class RequestFieldsChordsSequence(BaseModel):
         }
 
 
-
-
-    
-    
-
-
 class RequestFieldsPattern(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
     pattern: conlist(int, min_items=1, max_items=5) = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
@@ -91,8 +85,7 @@ class RequestFieldsPattern(BaseModel):
                 "play_upwards": True,
                 "preview_pattern": True,
                 "pause_between": True,
-                "notes_range": (40, 70)
-                "notes_range": (40, 70)
+                "notes_range": (40, 70),
             }
         }
 
