@@ -6,15 +6,15 @@ from starlette.background import BackgroundTasks
 import random
 
 from . import remove_file, convert_midi_file
-from .schemas import RequestFieldsRandomScalesOneChord
+from .schemas import RequestFieldsScalesOneChord
 
 from entities.midi_composer import MIDIComposer
 
 router = APIRouter()
 
 
-def compose_random_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int,
-                                    move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, notes_range: tuple):
+def compose_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int,
+                                    move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, random_sequence: bool,notes_range: tuple):
 
     
 
@@ -29,10 +29,17 @@ def compose_random_scales_one_chord(tempo: int, scales: List[str], chord_name: s
     quarternotes_measures = []
     scales_input = []
     chords_input = []
-    for _ in range(repeat_n_times):
-        scales_input.append((random.choice(scales),tonation))
-        chords_input.append((chord_name,tonation))
-        quarternotes_measures.append(quarternotes)
+    
+    if random_sequence:
+        for _ in range(repeat_n_times):
+            scales_input.append((random.choice(scales),tonation))
+            chords_input.append((chord_name,tonation))
+            quarternotes_measures.append(quarternotes)
+    else:
+        for i in range(repeat_n_times):
+            scales_input.append((scales[i%len(scales)],tonation))
+            chords_input.append((chord_name,tonation))
+            quarternotes_measures.append(quarternotes)
 
     midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25)
 
@@ -54,13 +61,13 @@ def compose_random_scales_one_chord(tempo: int, scales: List[str], chord_name: s
     return output_file_path
 
 
-@router.post("/random_scales_one_chord", tags=['play_modes'])
-def random_scales_one_chord(fields: RequestFieldsRandomScalesOneChord, background_tasks: BackgroundTasks):
+@router.post("/scales_one_chord", tags=['play_modes'])
+def scales_one_chord(fields: RequestFieldsScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 
-    output_file_path = compose_random_scales_one_chord(fields.tempo, fields.scales, fields.chord_name, fields.tonation,
+    output_file_path = compose_scales_one_chord(fields.tempo, fields.scales, fields.chord_name, fields.tonation,
                                                        fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline,
-                                                       fields.percussion, fields.notes_range)
+                                                       fields.percussion, fields.random_sequence, fields.notes_range)
 
     output_file_path = convert_midi_file(output_file_path)
 

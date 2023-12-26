@@ -1,8 +1,8 @@
 import random
+import numpy as np
 from typing import Tuple, List, Optional
 
 from midiutil import MIDIFile
-
 
 from entities.chords import Chords
 from entities.scales import Scales
@@ -50,6 +50,21 @@ class MIDIComposer:
                                     'a#':46,
                                     'b':47,
                                 }
+        
+        self.intervals_map: dict = {
+                                    'm2':1,
+                                    'M2':2,
+                                    'm3':3,
+                                    'M3':4,
+                                    'P4':5,
+                                    'TT':6,
+                                    'P5':7,
+                                    'm6':8,
+                                    'M6':9,
+                                    'm7':10,
+                                    'M7':11,
+                                    'P8':12
+        }
 
     # USEFUL FUNCTIONS
 
@@ -114,6 +129,65 @@ class MIDIComposer:
         all_tones = [x for x in all_tones if x <= max_notes_range and x >= min_notes_range]
         
         return sorted(all_tones), sorted(primes)
+    
+    # INTERVALS
+
+    def add_intervals_melody_part(self, intervals: List[str], program: int):
+        """Add random melody part
+        
+        Parameters
+        ----------
+        intervals: List[str]
+            List of possible intervals to be played.
+        program: int
+            Instrument program number.
+        """
+        
+        note = random.choice(list(range(46, 64)))
+
+        timeout = 60
+        repeat_n_times = self.timeout_to_n_repeats(timeout,1)
+
+        # track = 0
+        # channel = 0
+        
+        time = self.time_pointer
+        self.MIDIobj.addProgramChange(0, 0, 0, program)
+        
+        volume = 0.8
+
+        self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+
+        low_range = self.notes_range[0]
+        high_range = self.notes_range[1]
+
+        if self.difficulty == 'easy':
+            weights = [1/elem for elem in range(1,len(intervals)+1)]
+        elif self.difficulty == 'normal':
+            weights = list(np.ones(len(intervals),dtype=int))
+        elif self.difficulty == 'hard':
+            weights = list(range(1,len(intervals)+1))
+
+        intervals = sorted(intervals, key=lambda d: self.intervals_map[d])
+
+        for time in range(1, repeat_n_times+1):
+            
+            interval = self.intervals_map.get(random.choices(intervals,k=1,weights=weights)[0])
+            add_operator = random.choice([False,True])
+
+            if add_operator:
+                if note + interval <= high_range:
+                    note += interval
+                else:
+                    note -= interval
+            else:
+                if note - interval >= low_range:
+                    note -= interval
+                else:
+                    note += interval
+
+            self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+
         
     # SINGLE MELODY
     

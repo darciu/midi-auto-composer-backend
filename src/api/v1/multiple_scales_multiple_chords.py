@@ -48,8 +48,6 @@ def play_multiple_scales_multiple_chords(tempo: int, components: List[Tuple[str,
 
     midi_composer.close_midi()
 
-    
-
     return output_file_path
 
 
