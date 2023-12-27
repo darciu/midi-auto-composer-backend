@@ -93,7 +93,7 @@ class RequestFieldsPattern(BaseModel):
 
 class RequestFieldsScalesOneChord(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
-    scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
+    scales_names: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
     chord_name: str = Field(default='major', title='Background chord name')
     tonation: Tonation = Field(default='random', title='Tonation')
     quarternotes: int = quarternotes_field
