@@ -61,12 +61,6 @@ class RequestFieldsChordsSequence(BaseModel):
         }
 
 
-
-
-    
-    
-
-
 class RequestFieldsPattern(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
     pattern: conlist(int, min_items=1, max_items=5) = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
@@ -91,8 +85,7 @@ class RequestFieldsPattern(BaseModel):
                 "play_upwards": True,
                 "preview_pattern": True,
                 "pause_between": True,
-                "notes_range": (40, 70)
-                "notes_range": (40, 70)
+                "notes_range": (40, 70),
             }
         }
 
@@ -100,7 +93,7 @@ class RequestFieldsPattern(BaseModel):
 
 class RequestFieldsScalesOneChord(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
-    scales: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
+    scales_names: List[str] = Field(default=['pentatonic_minor','pentatonic_major'], title='Scales to play')
     chord_name: str = Field(default='major', title='Background chord name')
     tonation: Tonation = Field(default='random', title='Tonation')
     quarternotes: int = quarternotes_field

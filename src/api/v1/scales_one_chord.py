@@ -13,7 +13,7 @@ from entities.midi_composer import MIDIComposer
 router = APIRouter()
 
 
-def compose_scales_one_chord(tempo: int, scales: List[str], chord_name: str, tonation: str, quarternotes: int,
+def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: str, tonation: str, quarternotes: int,
                                     move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, random_sequence: bool,notes_range: tuple):
 
     
@@ -32,12 +32,12 @@ def compose_scales_one_chord(tempo: int, scales: List[str], chord_name: str, ton
     
     if random_sequence:
         for _ in range(repeat_n_times):
-            scales_input.append((random.choice(scales),tonation))
+            scales_input.append((random.choice(scales_names),tonation))
             chords_input.append((chord_name,tonation))
             quarternotes_measures.append(quarternotes)
     else:
         for i in range(repeat_n_times):
-            scales_input.append((scales[i%len(scales)],tonation))
+            scales_input.append((scales_names[i%len(scales_names)],tonation))
             chords_input.append((chord_name,tonation))
             quarternotes_measures.append(quarternotes)
 
@@ -65,7 +65,7 @@ def compose_scales_one_chord(tempo: int, scales: List[str], chord_name: str, ton
 def scales_one_chord(fields: RequestFieldsScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 
-    output_file_path = compose_scales_one_chord(fields.tempo, fields.scales, fields.chord_name, fields.tonation,
+    output_file_path = compose_scales_one_chord(fields.tempo, fields.scales_names, fields.chord_name, fields.tonation,
                                                        fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline,
                                                        fields.percussion, fields.random_sequence, fields.notes_range)
 
