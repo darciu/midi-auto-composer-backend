@@ -1,5 +1,5 @@
 import random
-from typing import List, Tuple, Optional
+from typing import List
 
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
@@ -12,7 +12,7 @@ from entities.midi_composer import MIDIComposer
 router = APIRouter()
 
 
-def play_multiple_scales_multiple_chords(tempo: int, components: List[Tuple[str,int,Optional[str],str]], move_scale_max: int, difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
+def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], move_scale_max: int, difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
 
     midi_composer = MIDIComposer(tempo, notes_range, move_scale_max, difficulty)
     
@@ -21,11 +21,11 @@ def play_multiple_scales_multiple_chords(tempo: int, components: List[Tuple[str,
     chords_input = []
 
     for _ in range(repeat_n_times):
-        for component in components:
-            tonation = component[0]
-            quarternotes = component[1]
-            scale_name = component[2]
-            chord_name = component[3]
+        for component in sorted(components, key=lambda d: d['order']):
+            tonation = component['tonation']
+            quarternotes = component['quarternotes']
+            scale_name = component['scale_name']
+            chord_name = component['chord_name']
 
             quarternotes_measures.append(quarternotes)
             scales_input.append((scale_name, tonation,))

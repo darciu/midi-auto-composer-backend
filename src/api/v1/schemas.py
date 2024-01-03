@@ -1,4 +1,4 @@
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict
 from enum import Enum
 from pydantic import BaseModel, Field, conlist, validator
 
@@ -108,7 +108,7 @@ class RequestFieldsScalesOneChord(BaseModel):
         schema_extra = {
             "example": {
                 "tempo": 50,
-                "scales": ['pentatonic_minor','pentatonic_major'],
+                "scales_names": ['pentatonic_minor','pentatonic_major'],
                 "chord_name":"major",
                 "tonation": "random",
                 "quarternotes": 4,
@@ -125,7 +125,7 @@ class RequestFieldsScalesOneChord(BaseModel):
 class RequestFieldsCustomCreator(BaseModel):
     tempo: int = Field(default=50, title='Recording file tempo', ge=20, le=80)
     # tonation, quarternotes, scale_name, chord_name
-    components: List[Tuple[str,int,Optional[str],str]] = Field(title = 'Component block representing one measure' )
+    components: List[dict] = Field(title = 'Component block representing one measure' )
     move_scale_max: int = move_scale_max_field
     difficulty: Difficulty = difficulty_field
     repeat_n_times: int = Field(default=2, title='Repeat sequence n times', ge=1, le=5) 
@@ -134,10 +134,34 @@ class RequestFieldsCustomCreator(BaseModel):
     notes_range: tuple = notes_range_field
 
     class Config:
+
+        components = [
+                        {
+                            "order":1,
+                            "tonation":"a",
+                            "quarternotes":4,
+                            "scale_name":"ionian",
+                            "chord_name":"major"
+                        },
+                        {
+                            "order":2,
+                            "tonation":"c",
+                            "quarternotes":4,
+                            "scale_name":"mixolydian",
+                            "chord_name":"major"
+                        },
+                        {
+                            "order":3,
+                            "tonation":"d",
+                            "quarternotes":2,
+                            "scale_name":"aeolian",
+                            "chord_name":"minor"
+                        }
+                    ]
         schema_extra = {
             "example": {
                 "tempo": 70,
-                "components": [('a',3,None,'major'),('b',3,None,'minor'),('c#',3,None,'minor'),('d#',3,None,'dominant7')],
+                "components": components,
                 "move_scale_max": 2,
                 "difficulty": "normal",
                 "repeat_n_times": 5,
