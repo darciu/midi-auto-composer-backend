@@ -12,8 +12,6 @@ from .schemas import RequestFieldsPattern
 
 def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, play_upwards: bool, preview_pattern: bool, pause_between: bool, notes_range: tuple) -> str:
 
-    
-
     midi_composer = MIDIComposer(tempo, notes_range)
 
     tonation = midi_composer.get_tonation(tonation)
@@ -26,20 +24,22 @@ def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, p
 
     midi_composer.close_midi()
 
-    return output_file_path
+    return output_file_path, midi_composer.get_time_duration()
     
 
 @router.post("/pattern", tags=['play_modes'])
 def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
     """Playing pattern on scale basis"""
         
-    output_file_path = compose_pattern(fields.tempo, fields.pattern, fields.scale_name, fields.tonation, fields.play_upwards, fields.preview_pattern, fields.pause_between, fields.notes_range)
+    output_file_path, time_duration = compose_pattern(fields.tempo, fields.pattern, fields.scale_name, fields.tonation, fields.play_upwards, fields.preview_pattern, fields.pause_between, fields.notes_range)
     
-    output_file_path = convert_midi_file(output_file_path)
+    convert_midi_file(output_file_path, time_duration+2)
+
+    output_file_path = output_file_path.replace('.mid','.mp3')
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mp3')
 
 
 

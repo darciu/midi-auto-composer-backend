@@ -1,4 +1,5 @@
 import random
+import math
 import numpy as np
 from typing import Tuple, List, Optional
 
@@ -31,6 +32,7 @@ class MIDIComposer:
         """
         self.tempo = tempo
         self.time_pointer = 0
+        self.time_finish = 0
         self.notes_range = notes_range
         self.move_scale_max = move_scale_max
         self.difficulty = difficulty
@@ -81,7 +83,14 @@ class MIDIComposer:
     def timeout_to_n_repeats(self, timeout: int, quarternotes: int, sequence_len: int = 1) -> int:
 
         return int((self.tempo/(quarternotes*sequence_len))*(timeout/60))
-            
+    
+
+    def get_time_duration(self) -> int:
+        "time duration of MIDI in seconds"
+        # timeout = quarternotes/(tempo/60)
+        return int(math.ceil(self.time_finish/(self.tempo/60)))
+        
+        
     def midi_to_file(self, filepath: str):
         with open(filepath, "wb") as output_file:
             self.MIDIobj.writeFile(output_file)
@@ -188,6 +197,9 @@ class MIDIComposer:
 
             self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
 
+        if time > self.time_finish:
+            self.time_finish = time
+
         
     # SINGLE MELODY
     
@@ -218,6 +230,9 @@ class MIDIComposer:
                 note_pitch = self.__add_single_measure_random_melody(scale_name, scale_tonation, note_pitch, time, quarternotes)
                 
                 time += quarternotes
+
+        if time > self.time_finish:
+            self.time_finish = time
 
     def add_scale_pattern_part(self, pattern: List[int], scale_name: str, tonation: str, play_upwards: bool
                                , preview_pattern: bool, pause_between: bool = True):
@@ -288,6 +303,9 @@ class MIDIComposer:
                         time += 1
                         
             self.MIDIobj.addNote(0, 1, tonal_scale_reversed[-1], time, 1, int(1*127))
+        
+        if time > self.time_finish:
+            self.time_finish = time
 
 
     def pattern_preview(self, tonal_scale: list, pattern: list):
@@ -349,6 +367,9 @@ class MIDIComposer:
         for (chord_name, chord_tonation), quarternotes in zip(chords,quarternotes_measures):
             self.__add_single_chord(chord_name, chord_tonation, quarternotes, time)
             time += quarternotes
+
+        if time > self.time_finish:
+            self.time_finish = time
             
     def __add_single_chord(self, chord_name, chord_tonation, quarternotes, time):
         
@@ -439,6 +460,9 @@ class MIDIComposer:
         for (chord_name, chord_tonation), quarternotes in zip(chords,quarternotes_measures):
             self.__add_single_bassline(chord_name, chord_tonation, quarternotes, time)
             time += quarternotes
+
+        if time > self.time_finish:
+            self.time_finish = time
             
     def __add_single_bassline(self, chord_name, chord_tonation, quarternotes, time):
         
@@ -683,3 +707,6 @@ class MIDIComposer:
                 
 
                 time +=7
+
+            if time > self.time_finish:
+                self.time_finish = time
