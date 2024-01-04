@@ -58,21 +58,25 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
 
     midi_composer.close_midi()
 
-    return output_file_path
+    timeout += 1
+
+    return output_file_path, timeout
 
 
 @router.post("/scales_one_chord", tags=['play_modes'])
 def scales_one_chord(fields: RequestFieldsScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 
-    output_file_path = compose_scales_one_chord(fields.tempo, fields.scales_names, fields.chord_name, fields.tonation,
+    output_file_path, time_duration = compose_scales_one_chord(fields.tempo, fields.scales_names, fields.chord_name, fields.tonation,
                                                        fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline,
                                                        fields.percussion, fields.random_sequence, fields.notes_range)
 
-    output_file_path = convert_midi_file(output_file_path)
+    convert_midi_file(output_file_path, time_duration + 1)
+
+    output_file_path = output_file_path.replace('.mid','.mp3')
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mp3')
 
 

@@ -24,17 +24,19 @@ def compose_intervals(tempo: int, intervals: List[str], difficulty: str, notes_r
 
     midi_composer.close_midi()
 
-    return output_file_path
+    return output_file_path, midi_composer.get_time_duration()
 
 
 @router.post("/intervals", tags=['play_modes'])
 def intervals(fields: RequestFieldsIntervals, background_tasks: BackgroundTasks):
     """Play random selected intervals"""
 
-    output_file_path = compose_intervals(fields.tempo, fields.intervals, fields.difficulty, fields.notes_range)
+    output_file_path, time_duration = compose_intervals(fields.tempo, fields.intervals, fields.difficulty, fields.notes_range)
 
-    output_file_path = convert_midi_file(output_file_path)
+    convert_midi_file(output_file_path, time_duration + 2)
+
+    output_file_path = output_file_path.replace('.mid','.mp3')
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mp3')
