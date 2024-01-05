@@ -48,19 +48,23 @@ def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], mov
 
     midi_composer.close_midi()
 
-    return output_file_path
+    return output_file_path, midi_composer.get_time_duration()
 
 
 @router.post("/custom_creator", tags=['play_modes'])
 def custom_creator(fields: RequestFieldsCustomCreator, background_tasks: BackgroundTasks):
     """Providing measures play different scales with different chords in loop"""
 
-    output_file_path = play_multiple_scales_multiple_chords(fields.tempo, fields.components, 
+    output_file_path, time_duration = play_multiple_scales_multiple_chords(fields.tempo, fields.components, 
                                                             fields.move_scale_max, fields.difficulty, fields.repeat_n_times,
                                                             fields.bassline, fields.percussion, fields.notes_range)
 
-    output_file_path = convert_midi_file(output_file_path)
+    convert_midi_file(output_file_path, time_duration)
+
+    output_file_path = output_file_path.replace('.mid','.mp3')
 
     background_tasks.add_task(remove_file, output_file_path)
 
-    return FileResponse(output_file_path.replace('.mid','.mp3'), media_type='application/octet-stream', filename='record.mp3')
+    return FileResponse(output_file_path, media_type='application/octet-stream', filename='record.mp3')
+
+
