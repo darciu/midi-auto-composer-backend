@@ -42,7 +42,7 @@ origins = [
     "http://localhost:3333",
     "http://127.0.0.1:3333",
     "https://midi-auto-composer-front-bsnougc45q-lz.a.run.app/",
-    "https://test-cors.org",
+    "https://audiotrainer.pl/"
 ]
 
 app.add_middleware(
