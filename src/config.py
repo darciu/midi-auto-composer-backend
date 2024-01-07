@@ -1,0 +1,1 @@
+FRONTEND_URL = "https://midi-auto-composer-front-bsnougc45q-lz.a.run.app/"
