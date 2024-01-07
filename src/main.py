@@ -7,7 +7,7 @@ else:
 
 
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 
 from api.v1 import custom_creator
 from api.v1 import pattern
