@@ -1,3 +1,11 @@
+from os import environ
+
+if environ.get('FRONTEND_URL') is None:
+    from config import FRONTEND_URL
+else:
+    FRONTEND_URL = environ.get('FRONTEND_URL')
+
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -33,13 +41,12 @@ app = FastAPI(title='MIDI Auto Composer'
 origins = [
     "http://localhost:3333",
     "http://127.0.0.1:3333",
-    "*"
+    FRONTEND_URL,
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
-    allow_origin_regex='https://.*\.a\.run\.app/',
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
