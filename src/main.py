@@ -41,7 +41,7 @@ app = FastAPI(title='MIDI Auto Composer'
 origins = [
     "http://localhost:3333",
     "http://127.0.0.1:3333",
-    FRONTEND_URL,
+    "https://midi-auto-composer-front-bsnougc45q-lz.a.run.app/",
 ]
 
 app.add_middleware(
