@@ -54,6 +54,7 @@ origins = [
     "https://audiotrainer.pl",
     "http://localhost:3333",
     "http://127.0.0.1:3333",
+    "*"
 ]
 
 app.add_middleware(
