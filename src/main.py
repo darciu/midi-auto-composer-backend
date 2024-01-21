@@ -76,6 +76,6 @@ app.include_router(get_scales.router, prefix="/v1/scales")
 app.include_router(get_chords.router, prefix="/v1/chords")
 app.include_router(get_scales_chords.router, prefix="/v1/scales_chords")
 
-@app.get('dummy/')
+@app.get('/dummy/')
 def dummy():
     return environ.get('DUMMY')
