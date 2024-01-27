@@ -5,9 +5,16 @@ if environ.get('FRONTEND_URL') is None:
 else:
     FRONTEND_URL = environ.get('FRONTEND_URL')
 
+username_secret = environ.get('USERNAME','username')
+password_secret = environ.get('PASSWORD','password')
 
-from fastapi import FastAPI
+import secrets
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from starlette.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse, UJSONResponse, JSONResponse
+from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
+from fastapi.openapi.utils import get_openapi
 
 from api.v1 import custom_creator
 from api.v1 import pattern
@@ -17,6 +24,8 @@ from api.v1 import intervals
 from api.v1 import get_scales
 from api.v1 import get_chords
 from api.v1 import get_scales_chords
+
+security = HTTPBasic()
 
 tags_metadata = [
     {
@@ -36,7 +45,11 @@ tags_metadata = [
 ]
 
 app = FastAPI(title='MIDI Auto Composer'
-              ,openapi_tags=tags_metadata)
+              ,openapi_tags=tags_metadata
+              ,docs_url=None
+              ,redoc_url=None
+              ,openapi_url="/api/openapi.json"
+              ,default_response_class=UJSONResponse)
 
 
 @app.middleware("http")
@@ -78,3 +91,25 @@ app.include_router(get_scales_chords.router, prefix="/v1/scales_chords")
 @app.get('/dummy')
 def dummy():
     return environ.get('DUMMY')
+
+
+def get_username(credentials: HTTPBasicCredentials = Depends(security)) -> str:
+    correct_username = secrets.compare_digest(credentials.username, username_secret)
+    correct_password = secrets.compare_digest(credentials.password, password_secret)
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
+
+@app.get("/docs", response_class=HTMLResponse)
+async def get_docs(username: str = Depends(get_username)):
+    return get_swagger_ui_html(openapi_url="/api/openapi.json", title="docs")
+
+
+@app.get("/redoc", response_class=HTMLResponse)
+async def get_redoc(username: str = Depends(get_username)):
+    return get_redoc_html(openapi_url="/api/openapi.json", title="redoc")
+
