@@ -39,18 +39,17 @@ app = FastAPI(title='MIDI Auto Composer'
               ,openapi_tags=tags_metadata)
 
 
-# @app.middleware("http")
-# async def add_cors_headers(request, call_next):
-#     response = await call_next(request)
-#     response.headers["Access-Control-Allow-Origin"] = "https://midi-auto-composer-front-bsnougc45q-lz.a.run.app, https://midi-auto-composer-frontend-bsnougc45q-ew.a.run.app, https://audiotrainer.pl, http://localhost:3333, http://127.0.0.1:3333"
-#     response.headers["Access-Control-Allow-Credentials"] = "true"
-#     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-#     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-#     return response
+@app.middleware("http")
+async def add_cors_headers(request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = f"{FRONTEND_URL}, https://audiotrainer.pl, http://localhost:3333, http://127.0.0.1:3333"
+    response.headers["Access-Control-Allow-Credentials"] = "true"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+    return response
 
 origins = [
-    "https://midi-auto-composer-front-bsnougc45q-lz.a.run.app",
-    "https://midi-auto-composer-frontend-bsnougc45q-ew.a.run.app",
+    FRONTEND_URL,
     "https://audiotrainer.pl",
     "http://localhost:3333",
     "http://127.0.0.1:3333",
