@@ -15,13 +15,13 @@ from fastapi.security import HTTPBasicCredentials, HTTPBasic
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, UJSONResponse, JSONResponse
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
-from fastapi.openapi.utils import get_openapi
 
 
 from api.v1 import custom_creator
 from api.v1 import pattern
 from api.v1 import scales_one_chord
 from api.v1 import intervals
+from api.v1 import melodies
 
 from api.v1 import get_scales
 from api.v1 import get_chords
@@ -84,7 +84,7 @@ app.include_router(pattern.router, prefix="/v1")
 app.include_router(intervals.router, prefix="/v1")
 app.include_router(scales_one_chord.router, prefix="/v1")
 app.include_router(custom_creator.router, prefix="/v1")
-
+app.include_router(melodies.router, prefix="/v1")
 
 app.include_router(get_scales.router, prefix="/v1/scales")
 app.include_router(get_chords.router, prefix="/v1/chords")
