@@ -5,6 +5,7 @@ if environ.get('FRONTEND_URL') is None:
 else:
     FRONTEND_URL = environ.get('FRONTEND_URL')
 
+
 username_secret = environ.get('USERNAME','username')
 password_secret = environ.get('PASSWORD','password')
 
@@ -15,6 +16,7 @@ from starlette.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, UJSONResponse, JSONResponse
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 from fastapi.openapi.utils import get_openapi
+
 
 from api.v1 import custom_creator
 from api.v1 import pattern
@@ -66,7 +68,7 @@ origins = [
     "https://audiotrainer.pl",
     "http://localhost:3333",
     "http://127.0.0.1:3333",
-    "*"
+    FRONTEND_URL,
 ]
 
 app.add_middleware(
