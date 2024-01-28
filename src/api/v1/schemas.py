@@ -24,6 +24,14 @@ class Tonation(str, Enum):
     b = "b"
     random = "random"
 
+    @classmethod
+    def _missing_(cls, value):
+        value = value.lower()
+        for member in cls:
+            if member.lower() == value:
+                return member
+        return None
+
 
 
 tempo_field = Field(default=120, title='Recording file tempo', ge=60, le=150)
@@ -64,11 +72,8 @@ class RequestFieldsChordsSequence(BaseModel):
 class RequestFieldsPattern(BaseModel):
     tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
     pattern: conlist(int, min_items=1, max_items=5) = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
-    tempo: int = Field(default=120, title='Recording file tempo', ge=80, le=150)
-    pattern: conlist(int, min_items=1, max_items=5) = Field(default=[1,2,3], title='Pattern to play through the chosen scale')
     scale_name: str = Field(default='mixolydian', title='Pattern will be based on this scale') 
     tonation: Tonation = Field(default='random', title='Scale tonation')
-    play_upwards: bool = Field(default=True, title='Pattern is played upwards or downwards')
     play_upwards: bool = Field(default=True, title='Pattern is played upwards or downwards')
     preview_pattern: bool = preview_field
     pause_between: bool = Field(default=True, title='There is always one quarternote pause added between pattern played')
@@ -78,7 +83,6 @@ class RequestFieldsPattern(BaseModel):
         schema_extra = {
             "example": {
                 "tempo": 120,
-                "pattern":[1,2,3],
                 "pattern":[1,2,3],
                 "scale_name": 'mixolydian',
                 "tonation": "random",
