@@ -710,3 +710,19 @@ class MIDIComposer:
 
             if time > self.time_finish:
                 self.time_finish = time
+
+    def add_melody(self, tonation: str, melody_id: str):
+        
+        # pitch, time, volume
+        
+        test_melody = [(0,0,0.7)
+                       ,(2,1,0.7)
+                       ,(4,2,0.7)
+                       ,(5,3,0.8)]
+        
+        for note in test_melody:
+            pitch = self.tone_start[tonation] + note[0]
+            time = note[1]
+            volume = note[2]
+
+            self.MIDIobj.addNote(0, 0, random.randint(40,50), time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
