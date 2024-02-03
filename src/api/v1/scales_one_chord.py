@@ -31,7 +31,7 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
     # timeout in seconds
     timeout = 100
     melody_volume = 0.8
-    repeat_n_times = midi_composer.timeout_to_n_repeats(timeout, quarternotes)
+    repeat_n_times = midi_composer.timeout_to_n_repeats(timeout, quarternotes*2)
 
     quarternotes_measures = []
     scales_input = []
@@ -48,7 +48,7 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
             chords_input.append((chord_name,tonation))
             quarternotes_measures.append(quarternotes)
 
-    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25, melody_volume)
+    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 42, melody_volume)
 
     midi_composer.add_background_chords_part(chords_input, quarternotes_measures, 2)
 
@@ -65,8 +65,6 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
 
     midi_composer.close_midi()
 
-    timeout += 1
-
     return output_file_path, timeout
 
 
@@ -79,7 +77,7 @@ def scales_one_chord(fields: RequestFieldsScalesOneChord, background_tasks: Back
                                                                fields.bassline, fields.percussion, fields.random_sequence,
                                                                fields.notes_range)
 
-    convert_midi_file(output_file_path, time_duration + 1, '33075')
+    convert_midi_file(output_file_path, time_duration, '28000')
 
     output_file_path = output_file_path.replace('.mid','.mp3')
 

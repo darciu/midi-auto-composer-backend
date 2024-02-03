@@ -98,7 +98,8 @@ class MIDIComposer:
     def close_midi(self):
         self.MIDIobj.close()
 
-    def __find_random_notes(self, scale_name: str, scale_tonation: str, note_pitch: int, shift_note_index: Optional[int], quarternotes: int):
+    def __find_random_notes(self, scale_name: str, scale_tonation: str, note_pitch: int, shift_note_index: Optional[int],
+                            count_notes: int):
 
         move_scale_obj = MoveScale(self.move_scale_max, self.difficulty)
         
@@ -117,7 +118,7 @@ class MIDIComposer:
            
         list_of_notes = []
         
-        for _ in range(quarternotes):
+        for _ in range(count_notes):
 
             # find new note pitch and what kind of shift it was
             note_pitch, shift_note_index = move_scale_obj.find_new_note(
@@ -222,8 +223,8 @@ class MIDIComposer:
         
         for (scale_name, scale_tonation), quarternotes in zip(scales,quarternotes_measures):
             
-            for measure_type in ['listen','repeat']:
-                if measure_type == 'listen':
+            for measure_type in ['call','response']:
+                if measure_type == 'call':
 
                     if scale_name is None:
                         time += quarternotes
@@ -232,7 +233,7 @@ class MIDIComposer:
                         
                         time += quarternotes
 
-                elif measure_type == 'repeat':
+                elif measure_type == 'response':
                     time += quarternotes
 
         if time > self.time_finish:
@@ -340,16 +341,18 @@ class MIDIComposer:
                                            time: int, quarternotes: int, volume: float):
         
 
-        # rhythm = self.__get_rhythm(quarternotes, [0.25,0.5,1,2], [0.1,1,1,0.2])
+        rhythm = self.__get_rhythm(quarternotes, [0.25,0.5,1,1.5,2], [0.1,1.2,1,0.2,0.2])
+
         
-        notes, _ = self.__find_random_notes(scale_name, scale_tonation, prev_note_pitch, None, quarternotes)
+        notes, _ = self.__find_random_notes(scale_name, scale_tonation, prev_note_pitch, None, len(rhythm))
         
         last_note_pitch = notes[-1]
         
         
-        for note in notes:
-            self.MIDIobj.addNote(0, 0, note, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
-            time = time + 1
+        for note, single_rhythm in zip(notes, rhythm):
+
+            self.MIDIobj.addNote(0, 0, note, time, single_rhythm, int(volume*127)) # track, channel, pitch, time, duration, volume
+            time = time + single_rhythm
         
         return last_note_pitch
     

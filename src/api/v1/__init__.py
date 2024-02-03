@@ -9,7 +9,7 @@ def remove_file(path: str) -> None:
 
     os.remove(path)
     
-def convert_midi_file(path: str, time_duration: int, bitrate: str = '44100') -> str:
+def convert_midi_file(path: str, time_duration: float, bitrate: str = '44100') -> str:
     
     wav_path = path.replace('.mid','.wav')
     mp3_path = path.replace('.mid','.mp3')
