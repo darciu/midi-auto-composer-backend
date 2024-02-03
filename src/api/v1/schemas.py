@@ -74,6 +74,7 @@ class RequestFieldsPattern(BaseModel):
     scale_name: str = Field(default='ionian', title='Pattern will be based on this scale') 
     tonation: Tonation = Field(default='g', title='Scale tonation')
     play_upwards: bool = Field(default=True, title='Pattern is played upwards or downwards')
+
     notes_range: tuple = notes_range_field
 
     class Config:

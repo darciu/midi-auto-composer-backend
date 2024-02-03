@@ -733,10 +733,6 @@ class MIDIComposer:
     def add_melody(self, tonation: str, melody_id: str):
 
         self.MIDIobj.addProgramChange(0, 0, 0, 1)
-        
-        
         volume = 0.7
-
-        self.MIDIobj.addNote(0, 0, 50, 0, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
-        self.MIDIobj.addNote(0, 0, 52, 1, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
-        self.MIDIobj.addNote(0, 0, 53, 2, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+ 
+        self.MIDIobj.addNote(0, 0, random.randint(40,50), time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
