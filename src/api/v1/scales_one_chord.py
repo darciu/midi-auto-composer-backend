@@ -14,16 +14,23 @@ router = APIRouter()
 
 
 def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: str, tonation: str, quarternotes: int,
-                                    move_scale_max: int, difficulty: str, bassline: bool, percussion: bool, random_sequence: bool,notes_range: tuple):
-
+                                    difficulty: str, bassline: bool, percussion: bool,
+                                    random_sequence: bool, notes_range: tuple):
     
+    if difficulty == 'easy':
+        move_scale_max = 1
+    elif difficulty == 'normal':
+        move_scale_max = 2
+    elif difficulty == 'hard':
+        move_scale_max = 3
 
     midi_composer = MIDIComposer(tempo, notes_range, move_scale_max, difficulty)
 
     tonation = midi_composer.get_tonation(tonation)
 
     # timeout in seconds
-    timeout = 60
+    timeout = 100
+    melody_volume = 0.8
     repeat_n_times = midi_composer.timeout_to_n_repeats(timeout, quarternotes)
 
     quarternotes_measures = []
@@ -41,7 +48,7 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
             chords_input.append((chord_name,tonation))
             quarternotes_measures.append(quarternotes)
 
-    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25)
+    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25, melody_volume)
 
     midi_composer.add_background_chords_part(chords_input, quarternotes_measures, 2)
 
@@ -67,11 +74,12 @@ def compose_scales_one_chord(tempo: int, scales_names: List[str], chord_name: st
 def scales_one_chord(fields: RequestFieldsScalesOneChord, background_tasks: BackgroundTasks):
     """One constant chord while playing given scales"""
 
-    output_file_path, time_duration = compose_scales_one_chord(fields.tempo, fields.scales_names, fields.chord_name, fields.tonation,
-                                                       fields.quarternotes, fields.move_scale_max, fields.difficulty, fields.bassline,
-                                                       fields.percussion, fields.random_sequence, fields.notes_range)
+    output_file_path, time_duration = compose_scales_one_chord(fields.tempo, fields.scales_names, fields.chord_name,
+                                                               fields.tonation, fields.quarternotes, fields.difficulty,
+                                                               fields.bassline, fields.percussion, fields.random_sequence,
+                                                               fields.notes_range)
 
-    convert_midi_file(output_file_path, time_duration + 1)
+    convert_midi_file(output_file_path, time_duration + 1, '33075')
 
     output_file_path = output_file_path.replace('.mid','.mp3')
 
