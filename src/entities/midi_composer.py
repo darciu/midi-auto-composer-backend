@@ -359,7 +359,7 @@ class MIDIComposer:
         
     # BACKGROUND CHORDS
     
-    def add_background_chords_part(self, chords: List[tuple], quarternotes_measures: List[int], program: int):
+    def add_background_chords_part(self, chords: List[tuple], quarternotes_measures: List[int], program: int, volume: float):
         """Add background chords part. Every first beat is different than the next ones.
         
         Parameters
@@ -378,13 +378,13 @@ class MIDIComposer:
         
         for (chord_name, chord_tonation), quarternotes in zip(chords,quarternotes_measures):
             for _ in range(2):
-                self.__add_single_chord(chord_name, chord_tonation, quarternotes, time)
+                self.__add_single_chord(chord_name, chord_tonation, quarternotes, time, volume)
                 time += quarternotes
 
         if time > self.time_finish:
             self.time_finish = time
             
-    def __add_single_chord(self, chord_name, chord_tonation, quarternotes, time):
+    def __add_single_chord(self, chord_name, chord_tonation, quarternotes, time, volume):
         
         chord_sequence = chords.detailed.get(chord_name)['steps']
         
@@ -397,14 +397,14 @@ class MIDIComposer:
         
         rhythm = self.__get_rhythm(quarternotes, [1,2], [3,2])
                 
-        self.__add_chords_first_beat(chord_sequence, time, 0.5, rhythm[0])
+        self.__add_chords_first_beat(chord_sequence, time, volume + 0.1, rhythm[0])
         
         time += rhythm[0]
         
         
         for rhythm_value in rhythm[1:]:
             
-            self.__add_chords_next_beat(chord_sequence, time, 0.4, rhythm_value)
+            self.__add_chords_next_beat(chord_sequence, time, volume, rhythm_value)
             
             time += rhythm_value
 
@@ -425,16 +425,19 @@ class MIDIComposer:
         if rn == 1:
             # three notes, one quarter note
             notes = random.sample(chord_sequence, k=3)
+            volume += random.choice([-0.025,0,0.025])
             self.__arpeggio_chord(notes, time, volume, rhythm_value)
             
         elif rn == 2:
             # two notes, one quarter note
             notes = random.sample(chord_sequence, k=2)
+            volume += random.choice([-0.025,0,0.025])
             self.__arpeggio_chord(notes, time, volume, rhythm_value)
             
         elif rn == 3:
             # two eighth notes, ascending
             notes = sorted(random.sample(chord_sequence, k=2))
+            volume += random.choice([-0.025,0,0.025])
             note1 = [notes[0]]
             note2 = [notes[1]]
             self.__arpeggio_chord(note1, time, volume, 1)
@@ -446,6 +449,7 @@ class MIDIComposer:
             
     def __arpeggio_chord(self, notes: list, time: int, volume: int, rhythm_value):
         """Play chord with little delays"""
+        volume += random.choice([-0.05,0,0.05])
         for note in notes:
             self.MIDIobj.addNote(0, 1, note, time, rhythm_value, int(volume*127))
             time += random.randrange(10)/300
@@ -453,7 +457,7 @@ class MIDIComposer:
     
     # BASSLINE
     
-    def add_bassline_part(self, chords, quarternotes_measures: int, program: int):
+    def add_bassline_part(self, chords, quarternotes_measures: int, program: int, volume: float):
         """Add bassline part based on given chords.
         
         Parameters
@@ -472,13 +476,13 @@ class MIDIComposer:
         
         for (chord_name, chord_tonation), quarternotes in zip(chords,quarternotes_measures):
             for _ in range(2):
-                self.__add_single_bassline(chord_name, chord_tonation, quarternotes, time)
+                self.__add_single_bassline(chord_name, chord_tonation, quarternotes, time, volume)
                 time += quarternotes
 
         if time > self.time_finish:
             self.time_finish = time
             
-    def __add_single_bassline(self, chord_name, chord_tonation, quarternotes, time):
+    def __add_single_bassline(self, chord_name, chord_tonation, quarternotes, time, volume):
         
         chord_sequence = chords.detailed.get(chord_name)['steps']
         
@@ -486,14 +490,14 @@ class MIDIComposer:
         
         chord_sequence = [tone for tone in tonal_chord if tone <= tonal_chord[0]+12 and tone > tonal_chord[0]]
         
-        rhythm = self.__get_rhythm(quarternotes, [1,2], [1,3])
+        rhythm = self.__get_rhythm(quarternotes, [0.5,1,2], [0.7,1,3])
                 
         
         # first quarternote
         
         note = random.choices([chord_sequence[0],chord_sequence[2]], k=1, weights=[5,2])[0]
 
-        volume = random.choice([0.65,0.75,0.8])
+        volume += random.choice([-0.05,0,0.05])
         
         self.MIDIobj.addNote(0, 2, note-12, time, rhythm[0], int(volume*127))
         
@@ -504,7 +508,7 @@ class MIDIComposer:
             
             note = random.choice(chord_sequence[1:])
 
-            volume = random.choice([0.55,0.65,0.7])
+            volume += random.choice([-0.1,-0.05,0])
 
             self.MIDIobj.addNote(0, 2, note-12, time, rhythm_value, int(volume*127))
             
@@ -523,7 +527,7 @@ class MIDIComposer:
 
     # PERCUSSION
             
-    def add_percussion_part(self, quarternotes_measures: int):
+    def add_percussion_part(self, quarternotes_measures: int, volume: float):
         """Add percussion part based on quarternotes per measure. In MIDI channel 9 is dedicated for percussion.
         
         Parameters
@@ -730,16 +734,9 @@ class MIDIComposer:
 
         self.MIDIobj.addProgramChange(0, 0, 0, 1)
         
-        # pitch, time, volume
         
-        test_melody = [(0,0,0.7)
-                       ,(2,1,0.7)
-                       ,(4,2,0.7)
-                       ,(5,3,0.8)]
-        
-        for note in test_melody:
-            pitch = self.tone_start[tonation] + note[0]
-            time = note[1]
-            volume = note[2]
+        volume = 0.7
 
-            self.MIDIobj.addNote(0, 0, pitch, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+        self.MIDIobj.addNote(0, 0, 50, 0, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+        self.MIDIobj.addNote(0, 0, 52, 1, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+        self.MIDIobj.addNote(0, 0, 53, 2, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
