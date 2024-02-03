@@ -25,6 +25,12 @@ jobs:
           pip install -r requirements.txt
           pip install -r requirements_dev.txt
 
+        steps:
+        - uses: actions/checkout@v2
+        - uses: FedericoCarboni/setup-ffmpeg@v1
+          id: setup-ffmpeg
+        - run: ffmpeg -i input.avi output.mkv
+
       - name: Test with Pytest
         run: pytest -k 'test_midi_generator or test_move_scale or test_scales' -v -s
 
