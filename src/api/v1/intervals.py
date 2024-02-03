@@ -14,9 +14,11 @@ router = APIRouter()
 
 def compose_intervals(tempo: int, intervals: List[str], difficulty: str, notes_range: tuple):
 
+    timeout = 100
+
     midi_composer = MIDIComposer(tempo, notes_range, difficulty=difficulty)
 
-    midi_composer.add_intervals_melody_part(intervals, 1)
+    midi_composer.add_intervals_melody_part(intervals, 1, timeout)
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
@@ -24,7 +26,7 @@ def compose_intervals(tempo: int, intervals: List[str], difficulty: str, notes_r
 
     midi_composer.close_midi()
 
-    return output_file_path, midi_composer.get_time_duration()
+    return output_file_path, timeout
 
 
 @router.post("/intervals", tags=['play_modes'])
@@ -33,7 +35,7 @@ def intervals(fields: RequestFieldsIntervals, background_tasks: BackgroundTasks)
 
     output_file_path, time_duration = compose_intervals(fields.tempo, fields.intervals, fields.difficulty, fields.notes_range)
 
-    convert_midi_file(output_file_path, time_duration + 2)
+    convert_midi_file(output_file_path, time_duration + 2, '22050')
 
     output_file_path = output_file_path.replace('.mid','.mp3')
 

@@ -12,7 +12,15 @@ from entities.midi_composer import MIDIComposer
 router = APIRouter()
 
 
-def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], move_scale_max: int, difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
+def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
+
+
+    if difficulty == 'easy':
+        move_scale_max = 1
+    elif difficulty == 'normal':
+        move_scale_max = 2
+    elif difficulty == 'hard':
+        move_scale_max = 3
 
     midi_composer = MIDIComposer(tempo, notes_range, move_scale_max, difficulty)
     
@@ -56,7 +64,7 @@ def custom_creator(fields: RequestFieldsCustomCreator, background_tasks: Backgro
     """Providing measures play different scales with different chords in loop"""
 
     output_file_path, time_duration = play_multiple_scales_multiple_chords(fields.tempo, fields.components, 
-                                                            fields.move_scale_max, fields.difficulty, fields.repeat_n_times,
+                                                            fields.difficulty, fields.repeat_n_times,
                                                             fields.bassline, fields.percussion, fields.notes_range)
 
     convert_midi_file(output_file_path, time_duration)
