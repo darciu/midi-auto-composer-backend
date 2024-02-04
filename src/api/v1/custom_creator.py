@@ -38,11 +38,11 @@ def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], dif
     chords_input = []
 
     for _ in range(repeat_n_times):
-        for component in components.values():
-            tonation = component['tonation']
-            quarternotes = component['quarternotes']
-            scale_name = component['scale_name']
-            chord_name = component['chord_name']
+        for component in components:
+            tonation = component.values()['tonation'].lower()
+            quarternotes = component.values()['quarternotes']
+            scale_name = component.values()['scale_name']
+            chord_name = component.values()['chord_name']
 
             quarternotes_measures.append(quarternotes)
             scales_input.append((scale_name, tonation,))
