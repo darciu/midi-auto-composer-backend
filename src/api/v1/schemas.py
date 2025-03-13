@@ -192,17 +192,20 @@ class RequestFieldsIntervals(BaseModel):
         }
 
 class RequestFieldsMelody(BaseModel):
-    tempo: int = Field(default=30, title='Recording file tempo', ge=20, le=80)
+
+    tempo: int = Field(default=70, title='Recording file tempo', ge=40, le=120)
     tonation: Tonation = Field(default='random', title='Tonation')
-    melody_id: str = "0"
+    melody_id: str = "1"
+
     notes_range: tuple = notes_range_field
     
     class Config:
         schema_extra = {
             "example": {
-                "tempo": 30,
-                "tonation": "c",
-                "melody_id": "0",
+                "tempo": 70,
+                "tonation": "e",
+                "melody_id": "1",
+
                 "notes_range": (40, 81)
             }
         }

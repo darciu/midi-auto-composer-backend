@@ -8,6 +8,7 @@ from midiutil import MIDIFile
 from entities.chords import Chords
 from entities.scales import Scales
 from entities.move_scale import MoveScale
+from entities.structures import all_melodies
 
 
 chords = Chords.load()
@@ -732,7 +733,33 @@ class MIDIComposer:
 
     def add_melody(self, tonation: str, melody_id: str):
 
-        self.MIDIobj.addProgramChange(0, 0, 0, 1)
-        volume = 0.7
- 
-        self.MIDIobj.addNote(0, 0, random.randint(40,50), time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+            if time > self.time_finish:
+                self.time_finish = time
+
+    def add_melody(self, tonation: str, melody_id: str):
+        
+        # pitch, time, volume
+        key = self.tone_start[tonation] + 12
+        
+        melody = all_melodies.get(melody_id)
+
+        volume = 0.8
+        time = self.time_pointer        
+
+        for pitch, duration in melody['notes']:
+
+            self.MIDIobj.addNote(0, 0, pitch + key, time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+            time += duration
+
+        if time > self.time_finish:
+            self.time_finish = time
+
+        
+        
+        # for note in test_melody:
+        #     pitch = self.tone_start[tonation] + note[0]
+        #     time = note[1]
+        #     volume = note[2]
+
+        #     self.MIDIobj.addNote(0, 0, random.randint(40,50), time, 1, int(volume*127)) # track, channel, pitch, time, duration, volume
+
