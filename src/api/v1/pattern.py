@@ -10,13 +10,13 @@ router = APIRouter()
 
 from .schemas import RequestFieldsPattern
 
-def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, play_upwards: bool, preview_pattern: bool, pause_between: bool, notes_range: tuple) -> str:
+def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, play_upwards: bool, notes_range: tuple) -> str:
 
     midi_composer = MIDIComposer(tempo, notes_range)
 
     tonation = midi_composer.get_tonation(tonation)
 
-    midi_composer.add_scale_pattern_part(pattern, scale_name, tonation, play_upwards, preview_pattern, pause_between)
+    midi_composer.add_scale_pattern_part(pattern, scale_name, tonation, play_upwards, True, True)
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
@@ -31,9 +31,9 @@ def compose_pattern(tempo: int, pattern: list, scale_name: str, tonation: str, p
 def pattern(fields: RequestFieldsPattern, background_tasks: BackgroundTasks):
     """Playing pattern on scale basis"""
         
-    output_file_path, time_duration = compose_pattern(fields.tempo, fields.pattern, fields.scale_name, fields.tonation, fields.play_upwards, fields.preview_pattern, fields.pause_between, fields.notes_range)
+    output_file_path, time_duration = compose_pattern(fields.tempo, fields.pattern, fields.scale_name, fields.tonation, fields.play_upwards, fields.notes_range)
     
-    convert_midi_file(output_file_path, time_duration+2)
+    convert_midi_file(output_file_path, time_duration+2, '22050')
 
     output_file_path = output_file_path.replace('.mid','.mp3')
 

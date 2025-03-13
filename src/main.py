@@ -17,7 +17,6 @@ from fastapi.responses import HTMLResponse, UJSONResponse, JSONResponse
 from fastapi.openapi.docs import get_swagger_ui_html, get_redoc_html
 
 
-
 from api.v1 import custom_creator
 from api.v1 import pattern
 from api.v1 import scales_one_chord

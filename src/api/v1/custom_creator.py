@@ -12,7 +12,24 @@ from entities.midi_composer import MIDIComposer
 router = APIRouter()
 
 
-def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], move_scale_max: int, difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
+def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], difficulty: str, repeat_n_times: int, bassline: bool, percussion: bool, notes_range: tuple) -> str:
+
+
+    if difficulty == 'easy':
+        move_scale_max = 1
+    elif difficulty == 'normal':
+        move_scale_max = 2
+    elif difficulty == 'hard':
+        move_scale_max = 3
+
+    melody_volume = 0.8
+    background_chords_volume = 0.7
+    bassline_volume = 0.8
+    percussion_volume = 0.5
+
+    melody_program = 42
+    background_chords_program = 2
+    bassline_program = 33
 
     midi_composer = MIDIComposer(tempo, notes_range, move_scale_max, difficulty)
     
@@ -21,26 +38,26 @@ def play_multiple_scales_multiple_chords(tempo: int, components: List[dict], mov
     chords_input = []
 
     for _ in range(repeat_n_times):
-        for component in sorted(components, key=lambda d: d['order']):
-            tonation = component['tonation']
+        for component in components:
+            tonation = component['tonation'].lower()
             quarternotes = component['quarternotes']
-            scale_name = component['scale_name']
-            chord_name = component['chord_name']
+            scale_name = component['scale_name'].lower()
+            chord_name = component['chord_name'].lower()
 
             quarternotes_measures.append(quarternotes)
             scales_input.append((scale_name, tonation,))
             chords_input.append((chord_name, tonation,))
 
 
-    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, 25)
+    midi_composer.add_random_melody_part(scales_input, quarternotes_measures, melody_program, melody_volume)
 
-    midi_composer.add_background_chords_part(chords_input, quarternotes_measures, 2)
+    midi_composer.add_background_chords_part(chords_input, quarternotes_measures, background_chords_program, background_chords_volume)
 
     if bassline:
-        midi_composer.add_bassline_part(chords_input, quarternotes_measures, 33)
+        midi_composer.add_bassline_part(chords_input, quarternotes_measures, bassline_program, bassline_volume)
 
     if percussion:
-        midi_composer.add_percussion_part(quarternotes_measures)
+        midi_composer.add_percussion_part(quarternotes_measures, percussion_volume)
 
     output_file_path = f'midi_storage/rec_{random.getrandbits(16)}.mid'
 
@@ -56,7 +73,7 @@ def custom_creator(fields: RequestFieldsCustomCreator, background_tasks: Backgro
     """Providing measures play different scales with different chords in loop"""
 
     output_file_path, time_duration = play_multiple_scales_multiple_chords(fields.tempo, fields.components, 
-                                                            fields.move_scale_max, fields.difficulty, fields.repeat_n_times,
+                                                            fields.difficulty, fields.repeat_n_times,
                                                             fields.bassline, fields.percussion, fields.notes_range)
 
     convert_midi_file(output_file_path, time_duration)
