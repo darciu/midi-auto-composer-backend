@@ -22,6 +22,7 @@ from api.v1 import pattern
 from api.v1 import scales_one_chord
 from api.v1 import intervals
 from api.v1 import melodies
+from api.v1 import get_melodies
 
 from api.v1 import get_scales
 from api.v1 import get_chords
@@ -51,7 +52,8 @@ app = FastAPI(title='MIDI Auto Composer'
               ,docs_url=None
               ,redoc_url=None
               ,openapi_url="/api/openapi.json"
-              ,default_response_class=UJSONResponse)
+            #   ,default_response_class=UJSONResponse
+              )
 
 
 @app.middleware("http")
@@ -85,6 +87,7 @@ app.include_router(intervals.router, prefix="/v1")
 app.include_router(scales_one_chord.router, prefix="/v1")
 app.include_router(custom_creator.router, prefix="/v1")
 app.include_router(melodies.router, prefix="/v1")
+app.include_router(get_melodies.router, prefix="/v1")
 
 app.include_router(get_scales.router, prefix="/v1/scales")
 app.include_router(get_chords.router, prefix="/v1/chords")
