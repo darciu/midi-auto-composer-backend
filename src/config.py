@@ -1,1 +1,1 @@
-FRONTEND_URL = "https://frontend-104740599345.europe-west1.run.app/"
+FRONTEND_URL = "https://frontend-xpezbyfyxq-ew.a.run.app/"

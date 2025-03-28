@@ -188,8 +188,10 @@ all_harmonies = {
 }
 
 
-all_melodies = {
-    "1":{
+
+all_melodies = [
+    {
+        "id":0,
         "name":"Fur Elise",
         "alias_name_pl":"Dla Elizy",
         "notes":[(1,1),(0,1),(1,1),(0,1),(1,1),(-4,1),(-1,1),(-3,1),(-6,2),(-11,1),(-6,1),(-4,2),(-11,1),(-4,1),(-3,3),
@@ -199,5 +201,11 @@ all_melodies = {
                  ]
 
     },
+    {
+        "id":1,
+        "name":"Test",
+        "alias_name_pl":'Test PL',
+        "notes":[(1,1),(3,1),(5,1)]
+    },
 
-}
+]
