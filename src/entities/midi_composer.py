@@ -731,10 +731,6 @@ class MIDIComposer:
                 if time > self.time_finish:
                     self.time_finish = time
 
-    def add_melody(self, tonation: str, melody_id: str):
-
-            if time > self.time_finish:
-                self.time_finish = time
 
     def add_melody(self, tonation: str, melody_id: str):
         
